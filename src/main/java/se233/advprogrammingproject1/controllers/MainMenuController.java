@@ -23,6 +23,7 @@ public class MainMenuController {
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
+            CropController.isAspectRatio=false;
         }
     }
 

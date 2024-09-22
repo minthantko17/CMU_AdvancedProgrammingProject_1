@@ -32,7 +32,10 @@ public class CropImageGroup extends Group {
             imageView.setLayoutX((500 - imageView.getFitWidth()) / 2);      // Vertically center if image has fitHeight
         }
 
-        rectangleBox=new RectangleBoxGroup(imageView,imageView.getLayoutX()+7,imageView.getLayoutY()+7, imageView.getFitWidth()-14,imageView.getFitHeight()-14);
+//        rectangleBox=new RectangleBoxGroup(imageView,imageView.getLayoutX()+7,imageView.getLayoutY()+7, imageView.getFitWidth()-14,imageView.getFitHeight()-14);
+        rectangleBox=new RectangleBoxGroup(imageView,imageView.getLayoutX(),imageView.getLayoutY(),
+                50,50);
+
         this.getChildren().addAll(imageView, rectangleBox);
     }
 

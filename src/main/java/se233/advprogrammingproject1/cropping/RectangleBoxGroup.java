@@ -6,6 +6,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
+import se233.advprogrammingproject1.controllers.CropController;
+import se233.advprogrammingproject1.functions.CropFunctions;
+
+import static se233.advprogrammingproject1.functions.CropFunctions.updateHandles;
 
 public class RectangleBoxGroup extends Group {
     private final Circle topLeftHandle, topRightHandle, bottomLeftHandle, bottomRightHandle;
@@ -14,9 +18,16 @@ public class RectangleBoxGroup extends Group {
     private ImageView imageView=new ImageView();
     private double  initX, initY, initWidth, initHeight;
     private boolean resizingTop, resizingBottom, resizingLeft, resizingRight, isMoving;
+    private static boolean canLarge;
+
+    private static double tempWidth=1;
+    private static double tempHeight=1;
+    private static double tempWHelper=1;
+    private static double tempHHelper=1;
 
     public RectangleBoxGroup(ImageView imageView, double x, double y, double width, double height) {
         this.imageView=imageView;
+        canLarge = isWithinImageView(rectangle);
 
         //rectangle box creation
         rectangle.setX(x);
@@ -26,6 +37,7 @@ public class RectangleBoxGroup extends Group {
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeWidth(3);
+        canLarge = isWithinImageView(rectangle);
 
         //create Resize-handle circles
         double handleSize=10;
@@ -122,38 +134,133 @@ public class RectangleBoxGroup extends Group {
             deltaY=event.getY()-initY;
         }
 
-
-        if (resizingTop){
-            System.out.println("resizing top");
-            rectangle.setY(initY+deltaY);
-            rectangle.setHeight(initHeight-deltaY);
+//        if (resizingTop){
+//            rectangle.setY(initY+deltaY);
+//            rectangle.setHeight(initHeight-deltaY);
+//
 //            if(CropController.isAspectRatio){
-//                System.out.println("in if condition");
-//                ensureRectangleWithinBounds(rectangle,imageView);
-//                updateHandles(rectangle);
-//                if(rectangle.getWidth()<imageView.getFitWidth()){
-//                    rectangle.setWidth(rectangle.getHeight()*(CropController.ratioWidth/CropController.ratioHeight));
-//                }else{
+//                if(canResizeLarger) {
+////                    System.out.println("in if condition");
+//                    rectangle.setWidth(rectangle.getHeight() * (CropController.ratioWidth / CropController.ratioHeight));
+//                    updateHandles(rectangle);
+//                }
+//                if(rectangle.getWidth() > imageView.getFitWidth()){
+////                    System.out.println("in if condition 2");
 //                    rectangle.setWidth(imageView.getFitWidth());
+//                    rectangle.setHeight(rectangle.getWidth() * (CropController.ratioHeight / CropController.ratioWidth));
+//                    canResizeLarger=false;
+//                }else{
+////                    System.out.println("in else condition");
+//                    canResizeLarger=canBeLarger(rectangle);
 //                }
 //            }
+////            // DON'T DELETE --- works but not too specific
+////            if(CropController.isAspectRatio){
+//////                System.out.println("in if condition");
+////                ensureRectangleWithinBounds(rectangle,imageView);
+////                updateHandles(rectangle);
+////                if(rectangle.getWidth()<imageView.getFitWidth()){
+////                    rectangle.setWidth(rectangle.getHeight()*(CropController.ratioWidth/CropController.ratioHeight));
+////                }else{
+////                    rectangle.setWidth(imageView.getFitWidth());
+////                }
+////            }
+//        }
+        if (resizingTop) {
+            System.out.println("resizing top");
+            rectangle.setY(initY + deltaY);
+            if (CropController.isAspectRatio) {
+                canLarge=isWithinImageView(rectangle);
+                tempHeight = initHeight-deltaY;
+                tempWidth = tempHeight * (CropController.ratioWidth / CropController.ratioHeight);
+                if(canLarge && tempWidth<imageView.getFitWidth() && tempHeight<imageView.getFitHeight()){
+                    System.out.println("in if");
+                    rectangle.setHeight(tempHeight);
+                    rectangle.setWidth(tempWidth);
+                }else{
+                    System.out.println("in else");
+                    CropFunctions.fitRecToSmallerImageViewSide(imageView, rectangle);
+                    canLarge=false;
+                }
+            }else{
+                rectangle.setHeight(initHeight - deltaY);
+            }
+//            updateHandles(this, rectangle);
         }
+
         if (resizingBottom){
+            System.out.println("resizing bottom");
+            if (CropController.isAspectRatio) {
+                canLarge=isWithinImageView(rectangle);
+                tempHeight = initHeight+deltaY;
+                tempWidth = tempHeight * (CropController.ratioWidth / CropController.ratioHeight);
+                if(canLarge && tempWidth<imageView.getFitWidth() && tempHeight<imageView.getFitHeight()){
+                    System.out.println("in if");
+                    rectangle.setHeight(tempHeight);
+                    rectangle.setWidth(tempWidth);
+                }else{
+                    System.out.println("in else");
+                    //need to change following code, maybe in if else cond: for ratioHeight>ratioWidth
+                    CropFunctions.fitRecToSmallerImageViewSide(imageView, rectangle);
+                    canLarge=false;
+                }
+            }else {
                 rectangle.setHeight(initHeight + deltaY);
+            }
         }
+
         if (resizingLeft){
+            System.out.println("resizing left");
             rectangle.setX(initX+deltaX);
-            rectangle.setWidth(initWidth-deltaX);
+            if (CropController.isAspectRatio) {
+                canLarge=isWithinImageView(rectangle);
+                tempWidth=initWidth-deltaX;
+                tempHeight = tempWidth * (CropController.ratioHeight / CropController.ratioWidth);
+                if(canLarge && tempHeight<imageView.getFitHeight() && tempWidth<imageView.getFitWidth()){
+                    System.out.println("in if");
+                    rectangle.setWidth(tempWidth);
+                    rectangle.setHeight(tempHeight);
+                }else{
+                    System.out.println("in else");
+                    CropFunctions.fitRecToSmallerImageViewSide(imageView, rectangle);
+                    canLarge=false;
+                }
+            }else {
+                rectangle.setWidth(initWidth - deltaX);
+            }
         }
         if (resizingRight){
-            rectangle.setWidth(initWidth+deltaX);
+            System.out.println("resizing right");
+            if (CropController.isAspectRatio) {
+                canLarge=isWithinImageView(rectangle);
+                tempWidth=initWidth+deltaX;
+                tempHeight = tempWidth * (CropController.ratioHeight / CropController.ratioWidth);
+                if(canLarge && tempHeight<imageView.getFitHeight() && tempWidth<imageView.getFitWidth()){
+                    System.out.println("in if");
+                    rectangle.setWidth(tempWidth);
+                    rectangle.setHeight(tempHeight);
+                }else{
+                    System.out.println("in else");
+                    CropFunctions.fitRecToSmallerImageViewSide(imageView, rectangle);
+                    canLarge=false;
+                }
+            }else {
+                rectangle.setWidth(initWidth + deltaX);
+            }
         }
-
-//        if(rectangle.getWidth()<10){ rectangle.setWidth(10); }
-//        if(rectangle.getHeight()<10){ rectangle.setHeight(10); }
-
         ensureRectangleWithinBounds(rectangle, imageView);
-        updateHandles(rectangle);
+        updateHandles(this, rectangle);
+    }
+
+    private boolean isWithinImageView(Rectangle rectangle){
+        if(imageView.getLayoutX() <= rectangle.getX()
+                && imageView.getLayoutY() <= rectangle.getY()
+                && (imageView.getLayoutX()+imageView.getFitWidth()) > rectangle.getWidth()
+                && (imageView.getLayoutY()+imageView.getFitHeight()) > rectangle.getHeight()
+        ){
+            return true;
+        }
+        return false;
     }
 
     //Resize finish conditions
@@ -163,26 +270,6 @@ public class RectangleBoxGroup extends Group {
         resizingLeft=false;
         resizingRight=false;
         handlerCircle.setFill(Color.SKYBLUE);
-    }
-
-    //update circle position according to rectangle
-    private void updateHandles(Rectangle rectangle){
-        topLeftHandle.setCenterX(rectangle.getX());
-        topLeftHandle.setCenterY(rectangle.getY());
-        topRightHandle.setCenterX(rectangle.getX() + rectangle.getWidth());
-        topRightHandle.setCenterY(rectangle.getY());
-        bottomLeftHandle.setCenterX(rectangle.getX());
-        bottomLeftHandle.setCenterY(rectangle.getY() + rectangle.getHeight());
-        bottomRightHandle.setCenterX(rectangle.getX() + rectangle.getWidth());
-        bottomRightHandle.setCenterY(rectangle.getY() + rectangle.getHeight());
-        topHandle.setCenterX(rectangle.getX() + rectangle.getWidth() / 2);
-        topHandle.setCenterY(rectangle.getY());
-        bottomHandle.setCenterX(rectangle.getX() + rectangle.getWidth() / 2);
-        bottomHandle.setCenterY(rectangle.getY() + rectangle.getHeight());
-        leftHandle.setCenterX(rectangle.getX());
-        leftHandle.setCenterY(rectangle.getY() + rectangle.getHeight() / 2);
-        rightHandle.setCenterX(rectangle.getX() + rectangle.getWidth());
-        rightHandle.setCenterY(rectangle.getY() + rectangle.getHeight() / 2);
     }
 
     // Method to ensure the rectangle stays within image bounds
@@ -195,7 +282,7 @@ public class RectangleBoxGroup extends Group {
         if (rect.getY() + rect.getHeight() > imageView.getLayoutY()+imageView.getFitHeight()) {
             rect.setY(imageView.getLayoutY()+imageView.getFitHeight() - rect.getHeight());
         }
-        updateHandles(rect);
+        updateHandles(this, rect );
     }
 
     //events and method for moving rectangle
@@ -214,7 +301,7 @@ public class RectangleBoxGroup extends Group {
                 rectangle.setX(rectangle.getX()+offsetX);
                 rectangle.setY(rectangle.getY()+offsetY);
                 ensureRectangleWithinBounds(rectangle, imageView);
-                updateHandles(rectangle);
+                updateHandles(this,rectangle);
                 initX=e.getX();
                 initY=e.getY();
             }
@@ -223,7 +310,26 @@ public class RectangleBoxGroup extends Group {
 
     }
 
+
+
     //Getter Setter
     public Rectangle getRectangle(){return rectangle;}
+
+    public Circle getTopLeftHandle() {return topLeftHandle;}
+
+    public Circle getTopRightHandle() {return topRightHandle;}
+
+    public Circle getBottomLeftHandle() {return bottomLeftHandle;}
+
+    public Circle getBottomRightHandle() {return bottomRightHandle;}
+
+    public Circle getLeftHandle() {return leftHandle;}
+
+    public Circle getRightHandle() {return rightHandle;}
+
+    public Circle getTopHandle() {return topHandle;}
+
+    public Circle getBottomHandle() {return bottomHandle;}
 }
+
 

@@ -1,7 +1,9 @@
 package se233.advprogrammingproject1.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -10,12 +12,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import se233.advprogrammingproject1.Launcher;
 import se233.advprogrammingproject1.cropping.CropImageGroup;
+import se233.advprogrammingproject1.cropping.RectangleBoxGroup;
 import se233.advprogrammingproject1.functions.CropFunctions;
 import se233.advprogrammingproject1.cropping.PreviewImageView;
 
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +38,22 @@ public class CropController {
     public ImageView previewImg;
     @FXML
     public HBox rectangleRatioHBox;
+
+    @FXML
+    public Button backToMainBtn;
     @FXML
     public Button ratioFreeBtn;
     @FXML
     public Button ratio11Btn;
     @FXML
     public Button ratio32Btn;
+    @FXML
+    public Button ratio23Btn;
+    @FXML
+    public Button ratio169Btn;
+    @FXML
+    public Button ratio916Btn;
+
 
 
     public static double ratioWidth;
@@ -66,6 +80,16 @@ public class CropController {
         cropGroup.getChildren().addAll(cropImageGroupsList.get(pageNumber));
     }
 
+    public void backToMainMenu() throws IOException {
+        if(Launcher.filePath!=null) {
+            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
+            Launcher.primaryScene = new Scene(fxmlLoader.load());
+            Launcher.primaryStage.setScene(Launcher.primaryScene);
+            Launcher.primaryStage.show();
+        }
+    }
+
+
     public void cropBtnAction(){
         if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
         if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
@@ -77,7 +101,6 @@ public class CropController {
         previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
 //        System.out.println("croppedBufferImages size: " + croppedBufferedImages.size());
     }
-
     public void saveBtnAction(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Folder to Save");
@@ -133,17 +156,70 @@ public class CropController {
     public void setRatioFreeBtnAction(){
         isAspectRatio=false;
     }
+
+    public void setRatio11BtnAction(){
+        isAspectRatio=true;
+        ratioWidth=1.0;
+        ratioHeight=1.0;
+        RectangleBoxGroup currentRectangleBox=cropImageGroupsList.get(pageNumber).getRectangleBox();
+        if(currentRectangleBox.getRectangle().getWidth()>currentRectangleBox.getRectangle().getHeight()){
+            currentRectangleBox.getRectangle().setWidth(currentRectangleBox.getRectangle().getHeight()*(ratioWidth/ratioHeight));
+        }else{
+            currentRectangleBox.getRectangle().setHeight(currentRectangleBox.getRectangle().getWidth()*(ratioHeight/ratioWidth));
+        }
+        CropFunctions.updateHandles(currentRectangleBox, currentRectangleBox.getRectangle());
+    }
+
     public void setRatio32BtnAction(){
         isAspectRatio=true;
         ratioWidth=3.0;
         ratioHeight=2.0;
-        Rectangle currentRectangleBox=cropImageGroupsList.get(pageNumber).getRectangleBox().getRectangle();
-        if(currentRectangleBox.getWidth()>currentRectangleBox.getHeight()){
-            currentRectangleBox.setWidth(currentRectangleBox.getHeight()*(ratioWidth/ratioHeight));
+        RectangleBoxGroup currentRectangleBox=cropImageGroupsList.get(pageNumber).getRectangleBox();
+        if(currentRectangleBox.getRectangle().getWidth()>currentRectangleBox.getRectangle().getHeight()){
+            currentRectangleBox.getRectangle().setWidth(currentRectangleBox.getRectangle().getHeight()*(ratioWidth/ratioHeight));
         }else{
-            currentRectangleBox.setHeight(currentRectangleBox.getWidth()*(ratioHeight/ratioWidth));
+            currentRectangleBox.getRectangle().setHeight(currentRectangleBox.getRectangle().getWidth()*(ratioHeight/ratioWidth));
         }
+        CropFunctions.updateHandles(currentRectangleBox, currentRectangleBox.getRectangle());
+    }
 
+    public void setRatio23BtnAction(){
+        isAspectRatio=true;
+        ratioWidth=2.0;
+        ratioHeight=3.0;
+        RectangleBoxGroup currentRectangleBox=cropImageGroupsList.get(pageNumber).getRectangleBox();
+        if(currentRectangleBox.getRectangle().getWidth()>currentRectangleBox.getRectangle().getHeight()){
+            currentRectangleBox.getRectangle().setWidth(currentRectangleBox.getRectangle().getHeight()*(ratioWidth/ratioHeight));
+        }else{
+            currentRectangleBox.getRectangle().setHeight(currentRectangleBox.getRectangle().getWidth()*(ratioHeight/ratioWidth));
+        }
+        CropFunctions.updateHandles(currentRectangleBox, currentRectangleBox.getRectangle());
+    }
+
+    public void setRatio169BtnAction(){
+        isAspectRatio=true;
+        ratioWidth=16.0;
+        ratioHeight=9.0;
+        RectangleBoxGroup currentRectangleBox=cropImageGroupsList.get(pageNumber).getRectangleBox();
+        if(currentRectangleBox.getRectangle().getWidth()>currentRectangleBox.getRectangle().getHeight()){
+            currentRectangleBox.getRectangle().setWidth(currentRectangleBox.getRectangle().getHeight()*(ratioWidth/ratioHeight));
+        }else{
+            currentRectangleBox.getRectangle().setHeight(currentRectangleBox.getRectangle().getWidth()*(ratioHeight/ratioWidth));
+        }
+        CropFunctions.updateHandles(currentRectangleBox, currentRectangleBox.getRectangle());
+    }
+
+    public void setRatio916BtnAction(){
+        isAspectRatio=true;
+        ratioWidth=9.0;
+        ratioHeight=16.0;
+        RectangleBoxGroup currentRectangleBox=cropImageGroupsList.get(pageNumber).getRectangleBox();
+        if(currentRectangleBox.getRectangle().getWidth()>currentRectangleBox.getRectangle().getHeight()){
+            currentRectangleBox.getRectangle().setWidth(currentRectangleBox.getRectangle().getHeight()*(ratioWidth/ratioHeight));
+        }else{
+            currentRectangleBox.getRectangle().setHeight(currentRectangleBox.getRectangle().getWidth()*(ratioHeight/ratioWidth));
+        }
+        CropFunctions.updateHandles(currentRectangleBox, currentRectangleBox.getRectangle());
     }
 
 
