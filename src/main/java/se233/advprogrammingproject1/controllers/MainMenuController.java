@@ -27,8 +27,9 @@ public class MainMenuController {
         }
     }
 
-    public void chooseFile() throws FileNotFoundException {
+    public void chooseFile(){
         Launcher.filePath = MainMenuFunctions.openFile();
+//        System.out.println(Launcher.filePath.get(0));
         if(Launcher.filePath!=null){
             Launcher.unzippedFileToProcess = MainMenuFunctions.unzipAndGetFile(Launcher.filePath, "temp");
             Launcher.imageViewsToProcess = MainMenuFunctions.loadImageViewsToProcess(Launcher.unzippedFileToProcess);

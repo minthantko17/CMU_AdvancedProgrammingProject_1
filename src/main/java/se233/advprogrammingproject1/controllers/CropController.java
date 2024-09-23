@@ -1,5 +1,6 @@
 package se233.advprogrammingproject1.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -12,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import se233.advprogrammingproject1.Launcher;
 import se233.advprogrammingproject1.cropping.CropImageGroup;
+import se233.advprogrammingproject1.cropping.CropTask;
 import se233.advprogrammingproject1.cropping.RectangleBoxGroup;
 import se233.advprogrammingproject1.functions.CropFunctions;
 import se233.advprogrammingproject1.cropping.PreviewImageView;
@@ -21,7 +23,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class CropController {
@@ -60,9 +66,8 @@ public class CropController {
     public static double ratioHeight;
     public static boolean isAspectRatio;
     public static List<BufferedImage> croppedBufferedImages = new ArrayList<>();
-    List<CropImageGroup> cropImageGroupsList=new ArrayList<>();
-    List<PreviewImageView> previewImageViewList=new ArrayList<>();
-    int pageNumber = 0;
+    public static List<PreviewImageView> previewImageViewList=new ArrayList<>();
+    List<CropImageGroup> cropImageGroupsList=new ArrayList<>();    int pageNumber = 0;
 
     @FXML
     public void initialize(){
@@ -90,17 +95,48 @@ public class CropController {
     }
 
 
+//    public void cropBtnAction(){
+//        if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
+//        if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
+//        for(int i =0; i<cropImageGroupsList.size(); i++){
+//            croppedBufferedImages.add(CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle()));
+//            previewImageViewList.add(new PreviewImageView(croppedBufferedImages.get(i)));
+//        }
+//        previewImgGroup.getChildren().clear();
+//        previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
+////        System.out.println("croppedBufferImages size: " + croppedBufferedImages.size());
+//    }
+
     public void cropBtnAction(){
         if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
         if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
-        for(int i =0; i<cropImageGroupsList.size(); i++){
-            croppedBufferedImages.add(CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle()));
-            previewImageViewList.add(new PreviewImageView(croppedBufferedImages.get(i)));
+
+        croppedBufferedImages=new ArrayList<>(Collections.nCopies(cropImageGroupsList.size(), null));
+        previewImageViewList=new ArrayList<>(Collections.nCopies(cropImageGroupsList.size(), null));
+
+        int numberOfThread = Math.min(5, cropImageGroupsList.size());
+        try(ExecutorService executorService= Executors.newFixedThreadPool(numberOfThread);){
+            for(int i=0; i<cropImageGroupsList.size();i++){
+                CropImageGroup currentCropImageGroup = cropImageGroupsList.get(i);
+
+                CropTask cropTask=new CropTask(
+                        currentCropImageGroup.getImageView(),
+                        currentCropImageGroup.getRectangleBox().getRectangle(),
+                        previewImgGroup,
+                        i, pageNumber
+                );
+                executorService.submit(cropTask);
+            }
+            executorService.shutdown();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        previewImgGroup.getChildren().clear();
-        previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
-//        System.out.println("croppedBufferImages size: " + croppedBufferedImages.size());
+
+
+
+
     }
+
     public void saveBtnAction(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Folder to Save");

@@ -23,10 +23,10 @@ public class CropFunctions {
         double originalWidth = recBounds.getWidth() * scaleX;
         double originalHeight = recBounds.getHeight() * scaleY;
 
-        // Ensure the original image is loaded
+        // Load original image
         BufferedImage originalImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
 
-        // Crop the original image
+        // Crop original image
         BufferedImage croppedImage = originalImage.getSubimage(
                 (int) originalX,
                 (int) originalY,
