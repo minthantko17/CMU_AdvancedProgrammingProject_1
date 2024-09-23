@@ -4,6 +4,7 @@ module se233.advprogrammingproject1 {
     requires java.desktop;
     requires javafx.swing;
     requires java.sql;
+    requires jdk.unsupported.desktop;
 
     opens se233.advprogrammingproject1.controllers to javafx.fxml;
 

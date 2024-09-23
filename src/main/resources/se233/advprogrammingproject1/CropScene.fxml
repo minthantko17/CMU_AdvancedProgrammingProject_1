@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -28,7 +29,7 @@
                   </Button>
                   <Button fx:id="ratioFreeBtn" mnemonicParsing="false" onAction="#setRatioFreeBtnAction" prefWidth="52.0" text="Free">
                      <HBox.margin>
-                        <Insets bottom="4.0" left="25.0" right="10.0" top="4.0" />
+                        <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="ratio11Btn" mnemonicParsing="false" onAction="#setRatio11BtnAction" prefWidth="52.0" text="1 : 1">
@@ -92,7 +93,10 @@
                <children>
                   <Group fx:id="previewImgGroup" layoutX="20.0" layoutY="15.0" />
                </children></Pane>
-            <Pane prefHeight="242.0" prefWidth="300.0" />
+            <ScrollPane fx:id="scrollPane" prefHeight="236.0" prefWidth="300.0">
+               <content>
+                  <VBox fx:id="progressVBox" prefWidth="294.0" />
+               </content></ScrollPane>
             <Pane prefHeight="98.0" prefWidth="300.0">
                <children>
                   <Button fx:id="SaveBtn" layoutX="124.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveBtnAction" text="Save" />

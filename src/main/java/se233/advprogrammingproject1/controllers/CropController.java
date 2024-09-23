@@ -1,16 +1,25 @@
 package se233.advprogrammingproject1.controllers;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
+import jdk.swing.interop.SwingInterOpUtils;
 import se233.advprogrammingproject1.Launcher;
 import se233.advprogrammingproject1.cropping.CropImageGroup;
 import se233.advprogrammingproject1.cropping.CropTask;
@@ -25,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +54,6 @@ public class CropController {
     public ImageView previewImg;
     @FXML
     public HBox rectangleRatioHBox;
-
     @FXML
     public Button backToMainBtn;
     @FXML
@@ -59,8 +68,10 @@ public class CropController {
     public Button ratio169Btn;
     @FXML
     public Button ratio916Btn;
-
-
+    @FXML
+    public ScrollPane scrollPane;
+    @FXML
+    public VBox progressVBox;
 
     public static double ratioWidth;
     public static double ratioHeight;
@@ -68,17 +79,15 @@ public class CropController {
     public static List<BufferedImage> croppedBufferedImages = new ArrayList<>();
     public static List<PreviewImageView> previewImageViewList=new ArrayList<>();
     List<CropImageGroup> cropImageGroupsList=new ArrayList<>();    int pageNumber = 0;
+    private ObservableList<ProgressBar> progressBars;
 
     @FXML
     public void initialize(){
         cropPane.setStyle("-fx-border-color: Black");
         cropPane.setStyle("-fx-background-color: Grey");
-//        Image image1=new Image(Launcher.class.getResourceAsStream("assets/myImg1.jpg"));
-//        Image image2=new Image(Launcher.class.getResourceAsStream("assets/myImg3.jpg"));
-//
-//        imageViews=new ArrayList<>();
-//        imageViews.add(new ImageView(image1));
-//        imageViews.add(new ImageView(image2));
+
+        progressBars= FXCollections.observableArrayList();
+
         for(int i=0; i<Launcher.imageViewsToProcess.size(); i++){
             cropImageGroupsList.add(new CropImageGroup(Launcher.imageViewsToProcess.get(i).getImage()));
         }
@@ -93,7 +102,6 @@ public class CropController {
             Launcher.primaryStage.show();
         }
     }
-
 
 //    public void cropBtnAction(){
 //        if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
@@ -111,29 +119,70 @@ public class CropController {
         if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
         if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
 
+        progressBars.clear();
+        progressVBox.getChildren().clear();
+
+        for(int i=0; i<cropImageGroupsList.size(); i++){
+            String imageName = Launcher.unzippedFileToProcess.get(i).getName();
+            Label imageLabel = new Label(imageName);
+            imageLabel.setPrefWidth(70);
+
+            ProgressBar progressBar = new ProgressBar(0);
+            progressBar.setPrefWidth(150);
+            progressBars.add(progressBar);
+
+            HBox hbox = new HBox();
+            hbox.setSpacing(10);
+            hbox.setAlignment(Pos.CENTER_LEFT);
+            hbox.setPadding(new Insets(5, 5, 5, 5));
+            hbox.getChildren().addAll(imageLabel, progressBar);
+
+            progressVBox.getChildren().add(hbox);
+        }
+
+        CountDownLatch countDownLatch=new CountDownLatch(cropImageGroupsList.size());
+
         croppedBufferedImages=new ArrayList<>(Collections.nCopies(cropImageGroupsList.size(), null));
         previewImageViewList=new ArrayList<>(Collections.nCopies(cropImageGroupsList.size(), null));
 
         int numberOfThread = Math.min(5, cropImageGroupsList.size());
-        try(ExecutorService executorService= Executors.newFixedThreadPool(numberOfThread);){
+        try{
+            ExecutorService executorService= Executors.newFixedThreadPool(numberOfThread);
             for(int i=0; i<cropImageGroupsList.size();i++){
                 CropImageGroup currentCropImageGroup = cropImageGroupsList.get(i);
-
-                CropTask cropTask=new CropTask(
-                        currentCropImageGroup.getImageView(),
+                CropTask cropTask=new CropTask(currentCropImageGroup.getImageView(),
                         currentCropImageGroup.getRectangleBox().getRectangle(),
                         previewImgGroup,
-                        i, pageNumber
+                        progressBars.get(i),
+                        i, pageNumber, countDownLatch
                 );
+                progressBars.get(i).progressProperty().bind(cropTask.progressProperty());
                 executorService.submit(cropTask);
             }
+            executorService.submit(()->{
+                try {
+                    System.out.println("count: "+countDownLatch.getCount());
+                    System.out.println("above await");
+                    countDownLatch.await();
+                    System.out.println("count: "+countDownLatch.getCount());
+                    System.out.println("below await");
+
+                    System.out.println("previewImgGroup size bef: "+previewImgGroup.getChildren().size());
+                    Platform.runLater(()->{
+                        previewImgGroup.getChildren().clear();
+                        previewImgGroup.getChildren().addAll(CropController.previewImageViewList.get(pageNumber));
+                        System.out.println("previewImgGroup size af: "+previewImgGroup.getChildren().size());
+                    });
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            System.out.println("before shutdown");
             executorService.shutdown();
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-
 
     }
 
@@ -167,7 +216,7 @@ public class CropController {
             cropGroup.getChildren().clear();
             cropGroup.getChildren().add(cropImageGroupsList.get(pageNumber));
         }
-        if(!previewImageViewList.isEmpty()) {
+        if(!previewImageViewList.isEmpty() && previewImageViewList.get(pageNumber) != null) {
             previewImgGroup.getChildren().clear();
             previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
         }
@@ -183,7 +232,7 @@ public class CropController {
             cropGroup.getChildren().clear();
             cropGroup.getChildren().add(cropImageGroupsList.get(pageNumber));
         }
-        if(!previewImageViewList.isEmpty()) {
+        if(!previewImageViewList.isEmpty() && previewImageViewList.get(pageNumber) != null) {
             previewImgGroup.getChildren().clear();
             previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
         }
