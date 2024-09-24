@@ -49,6 +49,10 @@ public class CropController {
     @FXML
     public Button nextBtn;
     @FXML
+    public Button prevBtn;
+    @FXML
+    public Button saveBtn;
+    @FXML
     public Group previewImgGroup;
     @FXML
     public ImageView previewImg;
@@ -92,6 +96,11 @@ public class CropController {
             cropImageGroupsList.add(new CropImageGroup(Launcher.imageViewsToProcess.get(i).getImage()));
         }
         cropGroup.getChildren().addAll(cropImageGroupsList.get(pageNumber));
+        System.out.println("page number: "+pageNumber);
+
+        prevBtn.setDisable(pageNumber == 0);
+        nextBtn.setDisable(pageNumber + 1 == Launcher.imageViewsToProcess.size());
+        saveBtn.setDisable(true);
     }
 
     public void backToMainMenu() throws IOException {
@@ -172,6 +181,7 @@ public class CropController {
                         previewImgGroup.getChildren().clear();
                         previewImgGroup.getChildren().addAll(CropController.previewImageViewList.get(pageNumber));
                         System.out.println("previewImgGroup size af: "+previewImgGroup.getChildren().size());
+                        saveBtn.setDisable(false);
                     });
 
                 } catch (InterruptedException e) {
@@ -221,6 +231,8 @@ public class CropController {
             previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
         }
 
+        prevBtn.setDisable(pageNumber == 0);
+        nextBtn.setDisable(pageNumber + 1 == Launcher.imageViewsToProcess.size());
     }
 
     public void prevBtnAction(){
@@ -236,6 +248,9 @@ public class CropController {
             previewImgGroup.getChildren().clear();
             previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
         }
+
+        prevBtn.setDisable(pageNumber == 0);
+        nextBtn.setDisable(pageNumber + 1 == Launcher.imageViewsToProcess.size());
     }
 
     public void setRatioFreeBtnAction(){
