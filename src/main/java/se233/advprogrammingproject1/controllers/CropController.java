@@ -43,54 +43,59 @@ import java.util.concurrent.Executors;
 public class CropController {
 
     @FXML
-    public Pane cropPane;
+    Pane cropPane;
     @FXML
-    public Group cropGroup;
+    Group cropGroup;
     @FXML
-    public Button nextBtn;
+    Button nextBtn;
     @FXML
-    public Button prevBtn;
+    Button prevBtn;
     @FXML
-    public Button saveBtn;
+    Button saveBtn;
     @FXML
-    public Group previewImgGroup;
+    Group previewImgGroup;
     @FXML
-    public ImageView previewImg;
+    ImageView previewImg;
     @FXML
-    public HBox rectangleRatioHBox;
+    HBox rectangleRatioHBox;
     @FXML
-    public Button backToMainBtn;
+    Button backToMainBtn;
     @FXML
-    public Button ratioFreeBtn;
+    Button ratioFreeBtn;
     @FXML
-    public Button ratio11Btn;
+    Button ratio11Btn;
     @FXML
-    public Button ratio32Btn;
+    Button ratio32Btn;
     @FXML
-    public Button ratio23Btn;
+    Button ratio23Btn;
     @FXML
-    public Button ratio169Btn;
+    Button ratio169Btn;
     @FXML
-    public Button ratio916Btn;
+    Button ratio916Btn;
     @FXML
-    public ScrollPane scrollPane;
+    ScrollPane scrollPane;
     @FXML
-    public VBox progressVBox;
+    VBox progressVBox;
 
     public static double ratioWidth;
     public static double ratioHeight;
     public static boolean isAspectRatio;
+    List<CropImageGroup> cropImageGroupsList=new ArrayList<>();
     public static List<BufferedImage> croppedBufferedImages = new ArrayList<>();
     public static List<PreviewImageView> previewImageViewList=new ArrayList<>();
-    List<CropImageGroup> cropImageGroupsList=new ArrayList<>();    int pageNumber = 0;
+    int pageNumber;
     private ObservableList<ProgressBar> progressBars;
 
     @FXML
     public void initialize(){
+        pageNumber=0;
         cropPane.setStyle("-fx-border-color: Black");
         cropPane.setStyle("-fx-background-color: Grey");
 
         progressBars= FXCollections.observableArrayList();
+        cropImageGroupsList.clear();
+        croppedBufferedImages.clear();
+        previewImageViewList.clear();
 
         for(int i=0; i<Launcher.imageViewsToProcess.size(); i++){
             cropImageGroupsList.add(new CropImageGroup(Launcher.imageViewsToProcess.get(i).getImage()));
@@ -104,25 +109,11 @@ public class CropController {
     }
 
     public void backToMainMenu() throws IOException {
-        if(Launcher.filePath!=null) {
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
-            Launcher.primaryScene = new Scene(fxmlLoader.load());
-            Launcher.primaryStage.setScene(Launcher.primaryScene);
-            Launcher.primaryStage.show();
-        }
+        FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
+        Launcher.primaryScene = new Scene(fxmlLoader.load());
+        Launcher.primaryStage.setScene(Launcher.primaryScene);
+        Launcher.primaryStage.show();
     }
-
-//    public void cropBtnAction(){
-//        if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
-//        if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
-//        for(int i =0; i<cropImageGroupsList.size(); i++){
-//            croppedBufferedImages.add(CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle()));
-//            previewImageViewList.add(new PreviewImageView(croppedBufferedImages.get(i)));
-//        }
-//        previewImgGroup.getChildren().clear();
-//        previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
-////        System.out.println("croppedBufferImages size: " + croppedBufferedImages.size());
-//    }
 
     public void cropBtnAction(){
         if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
@@ -323,32 +314,43 @@ public class CropController {
     }
 
 
-
     //----junk methods----
-    public void cropAndSaveImg(){
-//        Crop.crop(((CropImageGroup)cropGroup.getChildren().get(0)).getImageView(), ((CropImageGroup)cropGroup.getChildren().get(0)).getRectangleBox().getRectangle());
-//        Functions.crop(((CropImageGroup)cropGroup.getChildren().get(0)).getImageView(), ((CropImageGroup)cropGroup.getChildren().get(0)).getRectangleBox().getRectangle());
-//        directoryChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG Files", "*.jpg"));
-//        directoryChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG Files", "*.png"));
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Save Image");
-        File fileDir= directoryChooser.showDialog(Launcher.primaryStage);
-
-        String orgFileName;
-        for(int i =0; i<cropImageGroupsList.size(); i++){
-            orgFileName=Launcher.unzippedFileToProcess.get(i).getName();
-            String extension = orgFileName.substring(orgFileName.lastIndexOf(".") + 1); //get extension format to save as
-            String fileName="cropped_"+orgFileName;
-            File outputFile=new File(fileDir, fileName);
-
-            BufferedImage croppedImage= CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle());
-            CropFunctions.saveImg(croppedImage, outputFile, extension);
-        }
-    }
-
-    private void initiateRatios(){
-//        ratioFreeImgView.setImage(new Image(Launcher.class.getResourceAsStream("assets/size_free.png")));
-//        ratioSquareImgView.setImage(new Image(Launcher.class.getResourceAsStream("assets/size_1_1.png")));
-
-    }
+//    public void cropAndSaveImg(){
+////        Crop.crop(((CropImageGroup)cropGroup.getChildren().get(0)).getImageView(), ((CropImageGroup)cropGroup.getChildren().get(0)).getRectangleBox().getRectangle());
+////        Functions.crop(((CropImageGroup)cropGroup.getChildren().get(0)).getImageView(), ((CropImageGroup)cropGroup.getChildren().get(0)).getRectangleBox().getRectangle());
+////        directoryChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG Files", "*.jpg"));
+////        directoryChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG Files", "*.png"));
+//        DirectoryChooser directoryChooser = new DirectoryChooser();
+//        directoryChooser.setTitle("Save Image");
+//        File fileDir= directoryChooser.showDialog(Launcher.primaryStage);
+//
+//        String orgFileName;
+//        for(int i =0; i<cropImageGroupsList.size(); i++){
+//            orgFileName=Launcher.unzippedFileToProcess.get(i).getName();
+//            String extension = orgFileName.substring(orgFileName.lastIndexOf(".") + 1); //get extension format to save as
+//            String fileName="cropped_"+orgFileName;
+//            File outputFile=new File(fileDir, fileName);
+//
+//            BufferedImage croppedImage= CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle());
+//            CropFunctions.saveImg(croppedImage, outputFile, extension);
+//        }
+//    }
+//
+//    private void initiateRatios(){
+////        ratioFreeImgView.setImage(new Image(Launcher.class.getResourceAsStream("assets/size_free.png")));
+////        ratioSquareImgView.setImage(new Image(Launcher.class.getResourceAsStream("assets/size_1_1.png")));
+//
+//    }
+//
+//    public void cropBtnAction(){
+//        if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
+//        if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
+//        for(int i =0; i<cropImageGroupsList.size(); i++){
+//            croppedBufferedImages.add(CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle()));
+//            previewImageViewList.add(new PreviewImageView(croppedBufferedImages.get(i)));
+//        }
+//        previewImgGroup.getChildren().clear();
+//        previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
+////        System.out.println("croppedBufferImages size: " + croppedBufferedImages.size());
+//    }
 }

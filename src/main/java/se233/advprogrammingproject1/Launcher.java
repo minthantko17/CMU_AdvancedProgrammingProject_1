@@ -8,14 +8,15 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Launcher extends Application {
     public static Stage primaryStage;
     public static Scene primaryScene;
-    public static List<String> filePath;
-    public static List<File> unzippedFileToProcess;
-    public static List<ImageView> imageViewsToProcess;
+    public static List<String> filePath=new ArrayList<>();
+    public static List<File> unzippedFileToProcess=new ArrayList<>();
+    public static List<ImageView> imageViewsToProcess=new ArrayList<>();
 
 
     public static void main(String[] args) throws IOException {

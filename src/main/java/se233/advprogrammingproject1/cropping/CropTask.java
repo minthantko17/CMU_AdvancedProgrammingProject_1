@@ -37,7 +37,7 @@ public class CropTask extends Task<BufferedImage> {
         System.out.println("In thread: " + Thread.currentThread().getName());
         for (int i = 1; i <= 10; i++) {
             System.out.println("i: "+i);
-            Thread.sleep(500);
+            Thread.sleep(200);
             updateProgress(i, 10);
 //            progressBar.setProgress(i/10.0);
         }

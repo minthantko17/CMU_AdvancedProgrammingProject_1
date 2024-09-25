@@ -13,8 +13,7 @@ import java.util.zip.ZipInputStream;
 
 public class MainMenuFunctions {
     // for main menu
-    public static List<String> openFile(){
-        List<String> list = new ArrayList<>();
+    public static List<File> openFile(){
         FileChooser fileChooser=new FileChooser();
         fileChooser.setTitle("Select Image or ImageZip");
 
@@ -22,15 +21,12 @@ public class MainMenuFunctions {
         FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("Image or Zip", "*.zip", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif");
         fileChooser.getExtensionFilters().addAll(extensionFilter);
 
-        List<File> file=fileChooser.showOpenMultipleDialog(Launcher.primaryStage);
-        if (file==null){ return null; }
-//        System.out.println(file.toString());
-
-        for(File i: file){
-            list.add(i.toString());
+        List<File> file=fileChooser.showOpenMultipleDialog(Launcher.primaryStage); //return null when cancel btn is clicked
+        if (file==null){
+            return null;
         }
-
-        return list;
+        return  file;
+//        System.out.println(file.toString());
     }
 
     public static List<File> unzipAndGetFile(List<String> filePath, String targetPath){
@@ -76,6 +72,8 @@ public class MainMenuFunctions {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            }else{
+                System.out.println("Unsupported File"); //this will never run, trust me
             }
         }
 //        File inputFile=new File(filePath);
@@ -107,9 +105,42 @@ public class MainMenuFunctions {
     public static boolean checkZip(File file){
         String zipExtension = "zip";
         String fileName = file.getName().toLowerCase();
-        if(fileName.endsWith(zipExtension)){
-            return true;
-        }
-        return false;
+        return fileName.endsWith(zipExtension);
     }
+
+
+    //--junk methods--
+//    public static boolean checkImage(String fileName){
+//        String[] imageExtensions = new String[] { "png", "jpg", "jpeg", "bmp", "gif" };
+//        for (String ext : imageExtensions) {
+//            if (fileName.toLowerCase().endsWith(ext)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+//    public static boolean checkZip(String fileName){
+//        String zipExtension = "zip";
+//        return fileName.toLowerCase().endsWith(zipExtension);
+//    }
+
+//    public static List<String> openFileString(){
+//        List<String> list = new ArrayList<>();
+//        FileChooser fileChooser=new FileChooser();
+//        fileChooser.setTitle("Select Image or ImageZip");
+//
+//        //filter image and zip file to choose
+//        FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("Image or Zip", "*.zip", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif");
+//        fileChooser.getExtensionFilters().addAll(extensionFilter);
+//
+//        List<File> file=fileChooser.showOpenMultipleDialog(Launcher.primaryStage);
+//        if (file==null){ return null; }
+////        System.out.println(file.toString());
+//
+//        for(File i: file){
+//            list.add(i.toString());
+//        }
+//        return list;
+//    }
 }
