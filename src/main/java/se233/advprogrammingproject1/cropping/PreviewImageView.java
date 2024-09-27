@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class PreviewImageView extends ImageView {
-    public PreviewImageView(BufferedImage image) {
+    public PreviewImageView(BufferedImage image){
         this.prefWidth(260);
         this.prefHeight(260);
 

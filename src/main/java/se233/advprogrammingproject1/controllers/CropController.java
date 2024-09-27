@@ -3,22 +3,21 @@ package se233.advprogrammingproject1.controllers;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Popup;
 import jdk.swing.interop.SwingInterOpUtils;
 import se233.advprogrammingproject1.Launcher;
 import se233.advprogrammingproject1.cropping.CropImageGroup;
@@ -26,6 +25,7 @@ import se233.advprogrammingproject1.cropping.CropTask;
 import se233.advprogrammingproject1.cropping.RectangleBoxGroup;
 import se233.advprogrammingproject1.functions.CropFunctions;
 import se233.advprogrammingproject1.cropping.PreviewImageView;
+import se233.advprogrammingproject1.functions.MainMenuFunctions;
 
 
 import java.awt.image.BufferedImage;
@@ -87,7 +87,7 @@ public class CropController {
     private ObservableList<ProgressBar> progressBars;
 
     @FXML
-    public void initialize(){
+    public void initialize() throws IndexOutOfBoundsException{
         pageNumber=0;
         cropPane.setStyle("-fx-border-color: Black");
         cropPane.setStyle("-fx-background-color: Grey");
@@ -100,6 +100,8 @@ public class CropController {
         for(int i=0; i<Launcher.imageViewsToProcess.size(); i++){
             cropImageGroupsList.add(new CropImageGroup(Launcher.imageViewsToProcess.get(i).getImage()));
         }
+        System.out.println(cropImageGroupsList.size());
+        System.out.println(cropGroup.getChildren().size());
         cropGroup.getChildren().addAll(cropImageGroupsList.get(pageNumber));
         System.out.println("page number: "+pageNumber);
 
@@ -109,10 +111,14 @@ public class CropController {
     }
 
     public void backToMainMenu() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
-        Launcher.primaryScene = new Scene(fxmlLoader.load());
-        Launcher.primaryStage.setScene(Launcher.primaryScene);
-        Launcher.primaryStage.show();
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
+            Launcher.primaryScene = new Scene(fxmlLoader.load());
+            Launcher.primaryStage.setScene(Launcher.primaryScene);
+            Launcher.primaryStage.show();
+        } catch (IOException e) {
+            MainMenuFunctions.showAlertBox("Error in loading Main Menu.", Alert.AlertType.ERROR);
+        }
     }
 
     public void cropBtnAction(){
@@ -122,6 +128,7 @@ public class CropController {
         progressBars.clear();
         progressVBox.getChildren().clear();
 
+        //create Label+ProgressBar according to input image number
         for(int i=0; i<cropImageGroupsList.size(); i++){
             String imageName = Launcher.unzippedFileToProcess.get(i).getName();
             Label imageLabel = new Label(imageName);
@@ -140,6 +147,7 @@ public class CropController {
             progressVBox.getChildren().add(hbox);
         }
 
+        //create countdown to show preview after finishing all image processing
         CountDownLatch countDownLatch=new CountDownLatch(cropImageGroupsList.size());
 
         croppedBufferedImages=new ArrayList<>(Collections.nCopies(cropImageGroupsList.size(), null));
@@ -148,6 +156,7 @@ public class CropController {
         int numberOfThread = Math.min(5, cropImageGroupsList.size());
         try{
             ExecutorService executorService= Executors.newFixedThreadPool(numberOfThread);
+
             for(int i=0; i<cropImageGroupsList.size();i++){
                 CropImageGroup currentCropImageGroup = cropImageGroupsList.get(i);
                 CropTask cropTask=new CropTask(currentCropImageGroup.getImageView(),
@@ -159,26 +168,32 @@ public class CropController {
                 progressBars.get(i).progressProperty().bind(cropTask.progressProperty());
                 executorService.submit(cropTask);
             }
+
             executorService.submit(()->{
                 try {
-                    System.out.println("count: "+countDownLatch.getCount());
-                    System.out.println("above await");
                     countDownLatch.await();
-                    System.out.println("count: "+countDownLatch.getCount());
-                    System.out.println("below await");
-
-                    System.out.println("previewImgGroup size bef: "+previewImgGroup.getChildren().size());
                     Platform.runLater(()->{
-                        previewImgGroup.getChildren().clear();
-                        previewImgGroup.getChildren().addAll(CropController.previewImageViewList.get(pageNumber));
-                        System.out.println("previewImgGroup size af: "+previewImgGroup.getChildren().size());
-                        saveBtn.setDisable(false);
+                        try {
+                            if(previewImageViewList.get(pageNumber)==null){
+                                throw new NullPointerException();
+                            }
+                            previewImgGroup.getChildren().clear();
+                            previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
+                            System.out.println("previewImgGroup size af: "+previewImgGroup.getChildren().size());
+                        } catch (NullPointerException e){
+                            System.out.println("im here");
+                            previewImgGroup.getChildren().clear();
+                            previewImgGroup.getChildren().addAll(new PreviewImageView(SwingFXUtils.fromFXImage(cropImageGroupsList.get(pageNumber).getImageView().getImage(), null)));
+                            MainMenuFunctions.showAlertBox("Some Image can't be cropped.\nPlease check your cropping area.", Alert.AlertType.ERROR);
+                        } finally {
+                            saveBtn.setDisable(false);
+                        }
                     });
-
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             });
+
             System.out.println("before shutdown");
             executorService.shutdown();
         }catch (Exception e){
@@ -188,21 +203,36 @@ public class CropController {
     }
 
     public void saveBtnAction(){
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Folder to Save");
-        File fileDir= directoryChooser.showDialog(Launcher.primaryStage);
+        try {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Select Folder to Save");
 
-        System.out.println("Before save loop croppedBufferImages size: " +croppedBufferedImages.size());
-        System.out.println("Before save loop unzippedFiletoProcess size: " + Launcher.unzippedFileToProcess.size());
+            File defaultFolderToSave=new File(System.getProperty("user.home")+File.separator+"CroppedImages");
+            if(!defaultFolderToSave.exists()){
+                defaultFolderToSave.mkdir();
+            }
+            directoryChooser.setInitialDirectory(defaultFolderToSave);
 
-        for(int i =0; i<croppedBufferedImages.size(); i++){
-            String orgFileName=Launcher.unzippedFileToProcess.get(i).getName();
-            String extension = orgFileName.substring(orgFileName.lastIndexOf(".") + 1); //get extension format to save as
-            String fileName="cropped_"+orgFileName;
-            File outputFile=new File(fileDir, fileName);
+            File fileDir= directoryChooser.showDialog(Launcher.primaryStage);
+            System.out.println(directoryChooser);
+            if(fileDir==null){
+                throw new NullPointerException();
+            }
 
-            BufferedImage croppedImage=croppedBufferedImages.get(i);
-            CropFunctions.saveImg(croppedImage, outputFile, extension);
+            for(int i =0; i<croppedBufferedImages.size(); i++){
+                String orgFileName=Launcher.unzippedFileToProcess.get(i).getName();
+                String extension = orgFileName.substring(orgFileName.lastIndexOf(".") + 1); //get extension format to save as
+                String fileName="cropped_"+orgFileName;
+                File outputFile=new File(fileDir, fileName);
+
+                BufferedImage croppedImage=croppedBufferedImages.get(i);
+                CropFunctions.saveImg(croppedImage, outputFile, extension);
+            }
+            MainMenuFunctions.showAlertBox("Successfully Saved Image(s)\nSaved at: "+ fileDir, Alert.AlertType.INFORMATION);
+        }catch (NullPointerException e){
+            System.out.println("Save location is not selected");
+        }catch (IOException e) {
+            MainMenuFunctions.showAlertBox("Images(s) are not saved", Alert.AlertType.INFORMATION);
         }
     }
 

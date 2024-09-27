@@ -1,38 +1,39 @@
 package se233.advprogrammingproject1.functions;
 
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import se233.advprogrammingproject1.Launcher;
+import se233.advprogrammingproject1.exceptions.UnsupportedFormatException;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class MainMenuFunctions {
     // for main menu
-    public static List<File> openFile(){
+    public static List<File> openFile() throws IllegalFormatException {
         FileChooser fileChooser=new FileChooser();
         fileChooser.setTitle("Select Image or ImageZip");
 
         //filter image and zip file to choose
-        FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("Image or Zip", "*.zip", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif");
+        FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("Image or Zip", "*.zip", "*.png", "*.jpg", "*.jpeg");
         fileChooser.getExtensionFilters().addAll(extensionFilter);
 
         List<File> file=fileChooser.showOpenMultipleDialog(Launcher.primaryStage); //return null when cancel btn is clicked
         if (file==null){
-            return null;
+            throw new NullPointerException("No File selected 😞");
         }
         return  file;
-//        System.out.println(file.toString());
     }
 
-    public static List<File> unzipAndGetFile(List<String> filePath, String targetPath){
+    public static List<File> unzipAndGetFile(List<String> filePath, String targetPath) throws IOException, IndexOutOfBoundsException, UnsupportedFormatException {
         List<File> imageFiles=new ArrayList<>();
         File dir=new File(targetPath);
-//        if(!dir.exists()){ dir.mkdirs(); }
 
         List<File> inputFile=new ArrayList<>();
         for(int i=0; i<filePath.size(); i++){
@@ -68,19 +69,19 @@ public class MainMenuFunctions {
                     }
 
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
+                    throw e;
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw e;
                 }
             }else{
-                System.out.println("Unsupported File"); //this will never run, trust me
+                System.out.println("Unsupported File");
+                throw new UnsupportedFormatException();
             }
         }
-//        File inputFile=new File(filePath);
         return imageFiles;
     }
 
-    public static List<ImageView> loadImageViewsToProcess(List<File> imageFiles){
+    public static List<ImageView> loadImageViewsToProcess(List<File> imageFiles) throws NullPointerException{
         List<ImageView> imageViews=new ArrayList<>();
         for(File i : imageFiles){
             Image image= new Image(i.toURI().toString());
@@ -106,6 +107,12 @@ public class MainMenuFunctions {
         String zipExtension = "zip";
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(zipExtension);
+    }
+
+    public static void showAlertBox(String message, Alert.AlertType alertType){
+        Alert alert=new Alert(alertType);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 

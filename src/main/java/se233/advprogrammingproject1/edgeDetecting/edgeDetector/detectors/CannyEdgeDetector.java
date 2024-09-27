@@ -410,8 +410,8 @@ public class CannyEdgeDetector {
    
    /**
     * Finds angle tangent to edge direction given image gradient in x and y directions.
-    * @param x
-    * @param y
+    * @param G_x
+    * @param G_y
     * @return
     */
    private NonMaximumSuppression.EdgeDirection direction(int G_x, int G_y) {

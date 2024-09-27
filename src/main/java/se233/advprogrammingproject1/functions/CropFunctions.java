@@ -9,11 +9,14 @@ import se233.advprogrammingproject1.cropping.RectangleBoxGroup;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.io.*;
 
 public class CropFunctions {
 
-    public static BufferedImage crop(ImageView imageView, Rectangle recBounds) {
+    public static BufferedImage crop(ImageView imageView, Rectangle recBounds)
+            throws NullPointerException, RasterFormatException, IllegalArgumentException {
+
         double scaleX = imageView.getImage().getWidth() / imageView.getFitWidth();
         double scaleY = imageView.getImage().getHeight() / imageView.getFitHeight();
 
@@ -36,13 +39,9 @@ public class CropFunctions {
         return croppedImage;
     }
 
-    public static void saveImg(BufferedImage croppedImage, File fileName, String extension){
-        try{
-            ImageIO.write(croppedImage, extension, fileName);
-            System.out.println("Image saved to " + fileName.getAbsolutePath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void saveImg(BufferedImage croppedImage, File fileName, String extension) throws IOException {
+        ImageIO.write(croppedImage, extension, fileName);
+        System.out.println("Image saved to " + fileName.getAbsolutePath());
     }
 
     public static void fitRecToSmallerImageViewSide(ImageView imageView, Rectangle rectangle){

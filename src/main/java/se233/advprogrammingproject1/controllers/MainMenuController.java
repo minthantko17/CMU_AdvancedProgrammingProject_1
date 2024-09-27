@@ -3,6 +3,7 @@ package se233.advprogrammingproject1.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.DragEvent;
@@ -10,12 +11,15 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import se233.advprogrammingproject1.Launcher;
+import se233.advprogrammingproject1.exceptions.UnsupportedFormatException;
 import se233.advprogrammingproject1.functions.MainMenuFunctions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
+import java.util.IllegalFormatException;
 import java.util.List;
 
 public class MainMenuController {
@@ -46,15 +50,22 @@ public class MainMenuController {
         }
     }
 
-    public void redirectToCrop() throws IOException {
-        if(!Launcher.filePath.isEmpty() && !Launcher.unzippedFileToProcess.isEmpty() && !Launcher.imageViewsToProcess.isEmpty()) {
-            tempListView=listView;
-            System.out.println("tempListView: "+tempListView.getItems().size());
+    public void redirectToCrop(){
+        try {
+            if (Launcher.filePath.isEmpty() && Launcher.unzippedFileToProcess.isEmpty() && Launcher.imageViewsToProcess.isEmpty()) {
+                throw new FileNotFoundException("No file selected.");
+            }
+            tempListView = listView;
+            System.out.println("tempListView: " + tempListView.getItems().size());
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("CropScene.fxml"));
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
-            CropController.isAspectRatio=false;
+            CropController.isAspectRatio = false;
+        } catch (FileNotFoundException e) {
+            MainMenuFunctions.showAlertBox(e.getMessage(), Alert.AlertType.INFORMATION);
+        } catch (IOException e) {
+            MainMenuFunctions.showAlertBox("There is an error while switching scene.", Alert.AlertType.ERROR);
         }
     }
 
@@ -108,28 +119,50 @@ public class MainMenuController {
 
     public void chooseFile(){
 //        List<String> tempFilePath = MainMenuFunctions.openFile();
-        List<File> tempFilePath=MainMenuFunctions.openFile();
-        if(tempFilePath!=null){
+        try {
+            List<File> tempFilePath = MainMenuFunctions.openFile();
             System.out.println("in IF of chooseFile");
             String filePath;
             String fileName;
-            for(File file: tempFilePath){
+            for (File file : tempFilePath) {
                 filePath = file.getAbsolutePath();
                 fileName = Paths.get(filePath).getFileName().toString();
                 Launcher.filePath.add(filePath);
                 listView.getItems().add(fileName);
             }
             addFilesToProcess();
+        }catch (NullPointerException e){
+            System.out.println(e.getMessage());
+        } catch (IllegalFormatException e){
+            System.out.println("Illegal format");
         }
+
     }
 
-    public void addFilesToProcess(){
-        if(!Launcher.filePath.isEmpty()){
+    public void addFilesToProcess() {
+        try {
+            if (Launcher.filePath.isEmpty()) {
+                throw new FileNotFoundException("The input file path is empty. Please try again.");
+            }
             previewFilesPane.setVisible(true);
             clearAllBtn.setDisable(false);
-            Launcher.unzippedFileToProcess=MainMenuFunctions.unzipAndGetFile(Launcher.filePath, "temp");
-            Launcher.imageViewsToProcess=MainMenuFunctions.loadImageViewsToProcess(Launcher.unzippedFileToProcess);
+            Launcher.unzippedFileToProcess = MainMenuFunctions.unzipAndGetFile(Launcher.filePath, "temp");
+            Launcher.imageViewsToProcess = MainMenuFunctions.loadImageViewsToProcess(Launcher.unzippedFileToProcess);
+        } catch (FileNotFoundException | UnsupportedFormatException e) {
+            MainMenuFunctions.showAlertBox(e.getMessage(), Alert.AlertType.ERROR);
+            Launcher.filePath.clear();
+            Launcher.unzippedFileToProcess.clear();
+            Launcher.imageViewsToProcess.clear();
+            previewFilesPane.setVisible(false);
+            clearAllBtn.setDisable(true);
+        } catch(IndexOutOfBoundsException e){
+            MainMenuFunctions.showAlertBox("There is an error in loading multiple file.", Alert.AlertType.ERROR);
+        } catch(NullPointerException e){
+            MainMenuFunctions.showAlertBox("There is an error in processing to ImageView.", Alert.AlertType.ERROR);
+        } catch(IOException e){
+            MainMenuFunctions.showAlertBox("There is an error in processing Input/Outupt.", Alert.AlertType.ERROR);
         }
+
     }
 
 //    inputListView.setOnDragDropped(event->{
