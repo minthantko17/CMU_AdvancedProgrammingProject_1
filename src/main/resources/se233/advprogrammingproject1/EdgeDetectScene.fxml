@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advprogrammingproject1.controllers.EdgeDetectController">
+   <children>
+      <VBox prefHeight="620.0" prefWidth="600.0">
+         <children>
+            <HBox fx:id="edgeDetectRectangleRatioHBOx" maxHeight="36.0" minHeight="36.0" prefHeight="36.0" prefWidth="600.0" style="-fx-background-color: #59788E;">
+               <children>
+                  <Button fx:id="edgeDetectBackToMainBtn" mnemonicParsing="false" onAction="#edgeDetectBackToMainMenu" prefWidth="70.0" text="⬅ Back">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="10.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="cannyEdgeDetectBtn" mnemonicParsing="false" onAction="#setCannyEdgeDetectBtnAction" prefWidth="80.0" text="Canny">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="100.0" right="10.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="laplacianEdgeDetectBtn" mnemonicParsing="false" onAction="#setLaplacianEdgeDetectBtnAction" prefWidth="80.0" text="Laplacian">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="sobelEdgeDetectBtn" mnemonicParsing="false" onAction="#setSobelEdgeDetectBtnAction" prefWidth="80.0" text="Sobel">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <Pane fx:id="edgeDetectPane" prefHeight="520.0" prefWidth="600.0">
+               <children>
+                  <Group fx:id="edgeDetectGroup" layoutX="40.0" layoutY="3.0" />
+               </children>
+            </Pane>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.85711669921875" minWidth="10.0" prefWidth="62.14283098493303" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.4285888671875" minWidth="10.0" prefWidth="124.42859758649553" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="edgeDetectPrevBtn" mnemonicParsing="false" onAction="#edgeDetectPrevBtnAction" text="Previous" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Button fx:id="edgeDetectBtn" mnemonicParsing="false" onAction="#edgeDetectBtnAction" prefHeight="26.0" prefWidth="111.0" text="Edge Detect" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Button fx:id="edgeDetectNextBtn" mnemonicParsing="false" onAction="#edgeDetectNextBtnAction" prefHeight="26.0" prefWidth="75.0" text="Next" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+      <VBox layoutX="600.0" prefHeight="620.0" prefWidth="300.0">
+         <children>
+            <HBox fx:id="settingBox" maxHeight="36.0" minHeight="36.0" prefHeight="36.0" prefWidth="300.0" style="-fx-background-color: #59788E;">
+               <children>
+                  <Button fx:id="cannyWeakBtn" mnemonicParsing="false" onAction="#edgeDetectCannyWeak" prefWidth="70.0" text="Weak">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="4.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="cannyOriginalBtn" mnemonicParsing="false" onAction="#edgeDetectCannyOriginal" prefWidth="70.0" text="Canny">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="3.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="cannyColorBtn" mnemonicParsing="false" onAction="#edgeDetectCannyColor" prefWidth="70.0" text="Color">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" top="4.0" />
+                     </HBox.margin>
+                  </Button>
+               </children></HBox>
+            <Pane maxHeight="290.0" minHeight="290.0" prefHeight="290.0" prefWidth="300.0">
+               <children>
+                  <Group fx:id="edgeDetectPreviewImgGroup" layoutX="20.0" layoutY="15.0" />
+               </children></Pane>
+            <Pane prefHeight="242.0" prefWidth="300.0" />
+            <Pane prefHeight="98.0" prefWidth="300.0">
+               <children>
+                  <Button fx:id="edgeDetectSaveBtn" layoutX="100.0" layoutY="25.0" mnemonicParsing="false" onAction="#edgeDetectSaveBtnAction" prefWidth="100.0" text="Save Image" />
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

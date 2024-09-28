@@ -69,6 +69,15 @@ public class MainMenuController {
         }
     }
 
+    public void redirectToEdgeDetect() throws IOException {
+        if(Launcher.filePath!=null) {
+            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("EdgeDetectScene.fxml"));
+            Launcher.primaryScene = new Scene(fxmlLoader.load());
+            Launcher.primaryStage.setScene(Launcher.primaryScene);
+            Launcher.primaryStage.show();
+        }
+    }
+
     public void dragOverAction(DragEvent event){
         Dragboard db = event.getDragboard();
         boolean isAccepted=false;
