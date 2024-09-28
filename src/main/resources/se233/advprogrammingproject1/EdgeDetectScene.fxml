@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advprogrammingproject1.controllers.EdgeDetectController">
+<?import javafx.scene.control.ScrollPane?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advprogrammingproject1.controllers.EdgeDetectController">
    <children>
       <VBox prefHeight="620.0" prefWidth="600.0">
          <children>
@@ -69,29 +70,15 @@
       </VBox>
       <VBox layoutX="600.0" prefHeight="620.0" prefWidth="300.0">
          <children>
-            <HBox fx:id="settingBox" maxHeight="36.0" minHeight="36.0" prefHeight="36.0" prefWidth="300.0" style="-fx-background-color: #59788E;">
-               <children>
-                  <Button fx:id="cannyWeakBtn" mnemonicParsing="false" onAction="#edgeDetectCannyWeak" prefWidth="70.0" text="Weak">
-                     <HBox.margin>
-                        <Insets bottom="4.0" left="20.0" right="4.0" top="4.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="cannyOriginalBtn" mnemonicParsing="false" onAction="#edgeDetectCannyOriginal" prefWidth="70.0" text="Canny">
-                     <HBox.margin>
-                        <Insets bottom="4.0" left="20.0" right="3.0" top="4.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="cannyColorBtn" mnemonicParsing="false" onAction="#edgeDetectCannyColor" prefWidth="70.0" text="Color">
-                     <HBox.margin>
-                        <Insets bottom="4.0" left="20.0" right="20.0" top="4.0" />
-                     </HBox.margin>
-                  </Button>
-               </children></HBox>
+            <HBox fx:id="settingBox" maxHeight="36.0" minHeight="36.0" prefHeight="36.0" prefWidth="300.0" style="-fx-background-color: #59788E;" />
             <Pane maxHeight="290.0" minHeight="290.0" prefHeight="290.0" prefWidth="300.0">
                <children>
                   <Group fx:id="edgeDetectPreviewImgGroup" layoutX="20.0" layoutY="15.0" />
                </children></Pane>
-            <Pane prefHeight="242.0" prefWidth="300.0" />
+             <ScrollPane fx:id="edgeDetectScrollPane" prefHeight="236.0" prefWidth="300.0">
+                 <content>
+                     <VBox fx:id="edgeDetectProgressVBox" prefWidth="294.0" />
+                 </content></ScrollPane>
             <Pane prefHeight="98.0" prefWidth="300.0">
                <children>
                   <Button fx:id="edgeDetectSaveBtn" layoutX="100.0" layoutY="25.0" mnemonicParsing="false" onAction="#edgeDetectSaveBtnAction" prefWidth="100.0" text="Save Image" />

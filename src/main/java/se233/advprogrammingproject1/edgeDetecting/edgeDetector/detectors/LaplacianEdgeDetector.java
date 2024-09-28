@@ -55,8 +55,15 @@ public class LaplacianEdgeDetector {
                                    { -1, -1, 24, -1, -1, },
                                    { -1, -1, -1, -1, -1, },
                                    { -1, -1, -1, -1, -1  } };
-   
-   
+
+   public double[][] getKernel_3x3() {
+      return kernel_3x3;
+   }
+
+   public double[][] getKernel_5x5() {
+      return kernel_5x5;
+   }
+
    /***********************************************************************
     * Detect edges
     ***********************************************************************/
@@ -65,12 +72,12 @@ public class LaplacianEdgeDetector {
     * All work is done in constructor.
     * @param filePath path to image
     */
-   public LaplacianEdgeDetector(String filePath) {
+   public LaplacianEdgeDetector(String filePath, double[][] kernelValue) {
       // read image and get pixels
       BufferedImage originalImage;
       try {
          originalImage = ImageIO.read(new File(filePath));
-         findEdges(Grayscale.imgToGrayPixels(originalImage));
+         findEdges(Grayscale.imgToGrayPixels(originalImage), kernelValue);
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -82,8 +89,8 @@ public class LaplacianEdgeDetector {
     * <P> All work is done in constructor.
     * @param image
     */
-   public LaplacianEdgeDetector(int[][] image) {
-      findEdges(image);
+   public LaplacianEdgeDetector(int[][] image, double[][] kernelvalue) {
+      findEdges(image, kernelvalue);
    }
 
    
@@ -91,13 +98,13 @@ public class LaplacianEdgeDetector {
     * Finds only the most beautiful edges. 
     * @param image
     */
-   private void findEdges(int[][] image) {
+   private void findEdges(int[][] image, double[][] kernelValue) {
       // convolve image with Gaussian kernel
       ImageConvolution gaussianConvolution = new ImageConvolution(image, ConvolutionKernel.GAUSSIAN_KERNEL);
       int[][] smoothedImage = gaussianConvolution.getConvolvedImage();
 
       // apply convolutions to smoothed image
-      ImageConvolution ic = new ImageConvolution(smoothedImage, kernel_3x3);
+      ImageConvolution ic = new ImageConvolution(smoothedImage, kernelValue);
 
       // calculate magnitude of gradients
       int[][] convolvedImage = ic.getConvolvedImage();
@@ -105,13 +112,14 @@ public class LaplacianEdgeDetector {
       int columns = convolvedImage[0].length;
       
       // calculate threshold intensity to be edge
-      threshold = Threshold.calcThresholdEdges(convolvedImage);
+//      threshold = Threshold.calcThresholdEdges(convolvedImage);
+      threshold=10;
 
       // threshold image to find edges
       edges = new boolean[rows][columns];
       for (int i = 0; i < rows; i++)
          for (int j = 0; j < columns; j++)
-            edges[i][j] = Math.abs(convolvedImage[i][j]) == 0.0;
+            edges[i][j] = Math.abs(convolvedImage[i][j]) >= threshold;
    }
    
    
@@ -145,8 +153,17 @@ public class LaplacianEdgeDetector {
       BufferedImage originalImage = ImageIO.read(new File(imageFile));
       int[][] pixels = Grayscale.imgToGrayPixels(originalImage);
 
+      double[][] kernel_3x3 = {{-1, -1, -1},
+              {-1, 8, -1},
+              {-1, -1, -1}};
+
+      double[][] kernel_5x5 = { { -1, -1, -1, -1, -1, },
+              { -1, -1, -1, -1, -1, },
+              { -1, -1, 24, -1, -1, },
+              { -1, -1, -1, -1, -1, },
+              { -1, -1, -1, -1, -1  } };
       // run Laplacian edge detector
-      LaplacianEdgeDetector led = new LaplacianEdgeDetector(pixels);
+      LaplacianEdgeDetector led = new LaplacianEdgeDetector(pixels, kernel_3x3 );
       
       // get edges
       boolean[][] edges = led.getEdges();

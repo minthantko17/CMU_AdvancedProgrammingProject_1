@@ -70,11 +70,17 @@ public class MainMenuController {
     }
 
     public void redirectToEdgeDetect() throws IOException {
-        if(Launcher.filePath!=null) {
+        try {
+            if (Launcher.filePath.isEmpty() && Launcher.unzippedFileToProcess.isEmpty() && Launcher.imageViewsToProcess.isEmpty()) {
+                throw new FileNotFoundException("No file selected.");
+            }
+            tempListView=listView;
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("EdgeDetectScene.fxml"));
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
+        } catch (IOException e) {
+            MainMenuFunctions.showAlertBox("There is an error while switching scene.", Alert.AlertType.ERROR);
         }
     }
 

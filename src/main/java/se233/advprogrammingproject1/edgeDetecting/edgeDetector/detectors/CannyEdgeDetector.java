@@ -349,32 +349,72 @@ public class CannyEdgeDetector {
     * @param marked boolean[][] to avoid double-checking pixels
     * @param toAdd possible edges (must still check edge contains >= minEdgeSize # of pixels)
     */
-   private void dfs(int r, int c, HashSet<Integer> weakSet, HashSet<Integer> strongSet, boolean[][] marked, Stack<Integer> toAdd) {
-      // check indices still in bounds and haven't already checked this point
-      if (r < 0 || r >= rows || c < 0 || c >= columns || marked[r][c])
-         return;
+//   private void dfs(int r, int c, HashSet<Integer> weakSet, HashSet<Integer> strongSet, boolean[][] marked, Stack<Integer> toAdd) {
+//      // check indices still in bounds and haven't already checked this point
+//      if (r < 0 || r >= rows || c < 0 || c >= columns || marked[r][c])
+//         return;
+//
+//      // mark so that we don't come back
+//      marked[r][c] = true;
+//
+//      int index = sub2ind(r, c, columns);
+//      if (weakSet.contains(index) || strongSet.contains(index)) {
+//         // mark as possible edge (must also have >= minEdgeSize # of pixels)
+//         toAdd.push(sub2ind(r, c, columns));
+//
+//         // continue depth first search
+//         dfs(r - 1, c - 1, weakSet, strongSet, marked, toAdd);
+//         dfs(r - 1, c, weakSet, strongSet, marked, toAdd);
+//         dfs(r - 1, c + 1, weakSet, strongSet, marked, toAdd);
+//         dfs(r, c - 1, weakSet, strongSet, marked, toAdd);
+//         dfs(r, c + 1, weakSet, strongSet, marked, toAdd);
+//         dfs(r + 1, c - 1, weakSet, strongSet, marked, toAdd);
+//         dfs(r + 1, c, weakSet, strongSet, marked, toAdd);
+//         dfs(r + 1, c + 1, weakSet, strongSet, marked, toAdd);
+//      }
+//   }
 
-      // mark so that we don't come back
-      marked[r][c] = true;
-      
-      int index = sub2ind(r, c, columns);
-      if (weakSet.contains(index) || strongSet.contains(index)) {
-         // mark as possible edge (must also have >= minEdgeSize # of pixels)
-         toAdd.push(sub2ind(r, c, columns));
-         
-         // continue depth first search
-         dfs(r - 1, c - 1, weakSet, strongSet, marked, toAdd);
-         dfs(r - 1, c, weakSet, strongSet, marked, toAdd);
-         dfs(r - 1, c + 1, weakSet, strongSet, marked, toAdd);
-         dfs(r, c - 1, weakSet, strongSet, marked, toAdd);
-         dfs(r, c + 1, weakSet, strongSet, marked, toAdd);
-         dfs(r + 1, c - 1, weakSet, strongSet, marked, toAdd);
-         dfs(r + 1, c, weakSet, strongSet, marked, toAdd);
-         dfs(r + 1, c + 1, weakSet, strongSet, marked, toAdd);
-      } 
+   private void dfs(int startRow, int startCol, HashSet<Integer> weakSet, HashSet<Integer> strongSet, boolean[][] marked, Stack<Integer> toAdd) {
+      // Create an explicit stack for the DFS
+      Stack<int[]> stack = new Stack<>();
+      stack.push(new int[]{startRow, startCol});
+
+      while (!stack.isEmpty()) {
+         int[] current = stack.pop();
+         int r = current[0];
+         int c = current[1];
+
+         // Check indices are still in bounds and haven't already checked this point
+         if (r < 0 || r >= rows || c < 0 || c >= columns || marked[r][c]) {
+            continue; // Skip this cell
+         }
+
+         // Mark this cell as visited
+         marked[r][c] = true;
+
+         // Convert 2D coordinates to 1D index
+         int index = sub2ind(r, c, columns);
+
+         // Check if this index is in the weakSet or strongSet
+         if (weakSet.contains(index) || strongSet.contains(index)) {
+            // Mark as possible edge
+            toAdd.push(index);
+
+            // Push all 8 neighboring cells onto the stack
+            stack.push(new int[]{r - 1, c - 1}); // Top-left
+            stack.push(new int[]{r - 1, c});     // Top
+            stack.push(new int[]{r - 1, c + 1}); // Top-right
+            stack.push(new int[]{r, c - 1});     // Left
+            stack.push(new int[]{r, c + 1});     // Right
+            stack.push(new int[]{r + 1, c - 1}); // Bottom-left
+            stack.push(new int[]{r + 1, c});     // Bottom
+            stack.push(new int[]{r + 1, c + 1}); // Bottom-right
+         }
+      }
    }
 
-   
+
+
    /***********************************************************************
     * Helper methods
     ***********************************************************************/

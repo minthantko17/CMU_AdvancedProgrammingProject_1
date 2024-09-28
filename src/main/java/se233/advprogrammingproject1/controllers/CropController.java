@@ -100,10 +100,7 @@ public class CropController {
         for(int i=0; i<Launcher.imageViewsToProcess.size(); i++){
             cropImageGroupsList.add(new CropImageGroup(Launcher.imageViewsToProcess.get(i).getImage()));
         }
-        System.out.println(cropImageGroupsList.size());
-        System.out.println(cropGroup.getChildren().size());
         cropGroup.getChildren().addAll(cropImageGroupsList.get(pageNumber));
-        System.out.println("page number: "+pageNumber);
 
         prevBtn.setDisable(pageNumber == 0);
         nextBtn.setDisable(pageNumber + 1 == Launcher.imageViewsToProcess.size());
@@ -233,6 +230,8 @@ public class CropController {
             System.out.println("Save location is not selected");
         }catch (IOException e) {
             MainMenuFunctions.showAlertBox("Images(s) are not saved", Alert.AlertType.INFORMATION);
+        }catch (Exception e){
+            System.out.println("Error in save.\n"+e.getMessage());
         }
     }
 

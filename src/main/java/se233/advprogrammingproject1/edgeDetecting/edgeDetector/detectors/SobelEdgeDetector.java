@@ -66,12 +66,12 @@ public class SobelEdgeDetector extends GaussianEdgeDetector {
     * All work is done in constructor.
     * @param filePath path to image
     */
-   public SobelEdgeDetector(String filePath) {
+   public SobelEdgeDetector(String filePath, int threshold) {
       // read image and get pixels
       BufferedImage originalImage;
       try {
          originalImage = ImageIO.read(new File(filePath));
-         findEdges(Grayscale.imgToGrayPixels(originalImage), false);
+         findEdges(Grayscale.imgToGrayPixels(originalImage), false, threshold);
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -82,16 +82,16 @@ public class SobelEdgeDetector extends GaussianEdgeDetector {
     * <P> Uses L2 norm by default.
     * @param image
     */
-   public SobelEdgeDetector(int[][] image) {
-      findEdges(image, false);
+   public SobelEdgeDetector(int[][] image, int threshold) {
+      findEdges(image, false, threshold);
    }
    
    /**
     * All work is done in constructor. 
     * <P> Gives option to use L1 or L2 norm.
     */
-   public SobelEdgeDetector(int[][] image, boolean L1norm) {
-      findEdges(image, L1norm);
+   public SobelEdgeDetector(int[][] image, boolean L1norm, int threshold) {
+      findEdges(image, L1norm, threshold);
    }
 
 
@@ -112,10 +112,11 @@ public class SobelEdgeDetector extends GaussianEdgeDetector {
       String img = "src/main/resources/se233/advprogrammingproject1/assets/TomAndJerry2.jpg";
       BufferedImage originalImage = ImageIO.read(new File(img));
       int[][] pixels = Grayscale.imgToGrayPixels(originalImage);
+      int threshold=50;
 
       // run SobelEdgeDetector
       final long startTime = System.currentTimeMillis();
-      SobelEdgeDetector sed = new SobelEdgeDetector(pixels);
+      SobelEdgeDetector sed = new SobelEdgeDetector(pixels, threshold);
       final long endTime = System.currentTimeMillis();
 
       // print timing information

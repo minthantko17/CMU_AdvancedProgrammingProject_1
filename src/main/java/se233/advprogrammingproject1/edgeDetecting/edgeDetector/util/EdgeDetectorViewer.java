@@ -39,12 +39,13 @@ public class EdgeDetectorViewer {
       // read image and get pixels
       BufferedImage originalImage = ImageIO.read(new File(imageFile));
       int[][] pixels = Grayscale.imgToGrayPixels(originalImage);
+      int threshold=30;
 
       // run various Gaussian edge detectors
       GaussianEdgeDetector[] edgeDetectors = new GaussianEdgeDetector[4];
-      edgeDetectors[0] = new SobelEdgeDetector(pixels);
-      edgeDetectors[1] = new PrewittEdgeDetector(pixels);
-      edgeDetectors[2] = new RobertsCrossEdgeDetector(pixels);
+      edgeDetectors[0] = new SobelEdgeDetector(pixels, threshold);
+      edgeDetectors[1] = new PrewittEdgeDetector(pixels, threshold);
+      edgeDetectors[2] = new RobertsCrossEdgeDetector(pixels, threshold);
       
       // get edges
       boolean[][] sobelEdges   = edgeDetectors[0].getEdges();
