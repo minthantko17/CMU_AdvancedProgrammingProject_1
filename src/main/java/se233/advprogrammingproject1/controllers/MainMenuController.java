@@ -26,6 +26,8 @@ public class MainMenuController {
     @FXML
     Button toCropPageBtn;
     @FXML
+    Button toEdgeDetectPageBtn;
+    @FXML
     Button chooseFileBtn;
     @FXML
     Pane dragAreaPane;
@@ -48,6 +50,7 @@ public class MainMenuController {
             previewFilesPane.setVisible(false);
             clearAllBtn.setDisable(true);
         }
+
     }
 
     public void redirectToCrop(){
@@ -57,7 +60,9 @@ public class MainMenuController {
             }
             tempListView = listView;
             System.out.println("tempListView: " + tempListView.getItems().size());
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("CropScene.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("CropScene2.fxml"));
+            Launcher.primaryStage.setX(150);
+            Launcher.primaryStage.setY(10);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
@@ -75,11 +80,15 @@ public class MainMenuController {
                 throw new FileNotFoundException("No file selected.");
             }
             tempListView=listView;
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("EdgeDetectScene.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("EdgeDetectScene2.fxml"));
+            Launcher.primaryStage.setX(150);
+            Launcher.primaryStage.setY(10);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
+            MainMenuFunctions.showAlertBox(e.getMessage(), Alert.AlertType.INFORMATION);
+        }catch (IOException e) {
             MainMenuFunctions.showAlertBox("There is an error while switching scene.", Alert.AlertType.ERROR);
         }
     }
@@ -179,6 +188,25 @@ public class MainMenuController {
         }
 
     }
+
+
+    // ----non functional methods----
+    public void mousePressToCropBtn(){
+        toCropPageBtn.setStyle("-fx-background-color: #7e9e9e");
+    }
+
+    public void mouseReleaseToCropBtn(){
+        toCropPageBtn.setStyle("-fx-background-color: #a9d5d5");
+    }
+
+    public void mousePressToEdgeDetectBtn(){
+        toEdgeDetectPageBtn.setStyle("-fx-background-color: #7e9e9e");
+    }
+
+    public void mouseReleaseToEdgeDetectBtn(){
+        toEdgeDetectPageBtn.setStyle("-fx-background-color: #a9d5d5");
+    }
+
 
 //    inputListView.setOnDragDropped(event->{
 //        Dragboard db=event.getDragboard();

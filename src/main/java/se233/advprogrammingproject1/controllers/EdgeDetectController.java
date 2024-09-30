@@ -56,7 +56,7 @@ public class EdgeDetectController{
     @FXML
     public Group edgeDetectPreviewImgGroup;
     @FXML
-    public ImageView edgePreviewImg;
+    public Button edgeDetectBtn;
     @FXML
     public HBox edgeDetectRectangleRatioHBOx;
     @FXML
@@ -116,25 +116,31 @@ public class EdgeDetectController{
         strongWeakBtn.setPadding(insets);
         strongWeakBtn.setPrefWidth(80);
         strongWeakBtn.setPrefHeight(25.6);
+        strongWeakBtn.setStyle("-fx-background-color: white");
         cannyBtn.setPadding(insets);
         cannyBtn.setPrefWidth(80);
         cannyBtn.setPrefHeight(25.6);
+        cannyBtn.setStyle("-fx-background-color: white");
         originalColorBtn.setPadding(insets);
         originalColorBtn.setPrefWidth(80);
         originalColorBtn.setPrefHeight(25.6);
+        originalColorBtn.setStyle("-fx-background-color: white");
         kernel33Btn.setPadding(insets);
         kernel33Btn.setPrefWidth(80);
         kernel33Btn.setPrefHeight(25.6);
+        kernel33Btn.setStyle("-fx-background-color: white");
         kernel55Btn.setPadding(insets);
         kernel55Btn.setPrefWidth(80);
         kernel55Btn.setPrefHeight(25.6);
+        kernel55Btn.setStyle("-fx-background-color: white");
         slider.setPrefWidth(220);
         slider.setMax(250);
         slider.setMin(0);
-//        slider.setMajorTickUnit(50);
-//        slider.setMinorTickCount(5);
-//        slider.setShowTickLabels(true);
-//        slider.setShowTickMarks(true);
+
+
+        settingBox.setSpacing(10);
+        settingBox.setAlignment(Pos.CENTER);
+        settingBox.setPadding(new Insets(10));
 
         strongWeakBtn.setOnAction(e->{
             System.out.println("strong weak button clicked");
@@ -169,11 +175,89 @@ public class EdgeDetectController{
         edgeDetectPrevBtn.setDisable(pageNumber == 0);
         edgeDetectNextBtn.setDisable(pageNumber + 1 == Launcher.imageViewsToProcess.size());
         edgeDetectSaveBtn.setDisable(true);
+
+
+
+        //-----UI updates-----
+        edgeDetectBackToMainBtn.setOnMousePressed(event->{
+            edgeDetectBackToMainBtn.setStyle("-fx-background-color: lightgrey");
+        });
+        edgeDetectBackToMainBtn.setOnMouseReleased(event->{
+            edgeDetectBackToMainBtn.setStyle("-fx-background-color: white");
+        });
+        edgeDetectNextBtn.setOnMousePressed((event->{
+            edgeDetectNextBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        edgeDetectNextBtn.setOnMouseReleased(event->{
+            edgeDetectNextBtn.setStyle("-fx-background-color: white");
+        });
+        edgeDetectPrevBtn.setOnMousePressed((event->{
+            edgeDetectPrevBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        edgeDetectPrevBtn.setOnMouseReleased(event->{
+            edgeDetectPrevBtn.setStyle("-fx-background-color: white");
+        });
+        edgeDetectBtn.setOnMousePressed((event->{
+            edgeDetectBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        edgeDetectBtn.setOnMouseReleased(event->{
+            edgeDetectBtn.setStyle("-fx-background-color: white");
+        });
+        edgeDetectSaveBtn.setOnMousePressed((event->{
+            edgeDetectSaveBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        edgeDetectSaveBtn.setOnMouseReleased(event->{
+            edgeDetectSaveBtn.setStyle("-fx-background-color: white");
+        });
+
+        cannyEdgeDetectBtn.setOnMouseClicked(event->{
+            cannyEdgeDetectBtn.setStyle("-fx-background-color: gray");
+            laplacianEdgeDetectBtn.setStyle("-fx-background-color: white");
+            sobelEdgeDetectBtn.setStyle("-fx-background-color: white");
+        });
+        laplacianEdgeDetectBtn.setOnMouseClicked(event->{
+            cannyEdgeDetectBtn.setStyle("-fx-background-color: white");
+            laplacianEdgeDetectBtn.setStyle("-fx-background-color: gray");
+            sobelEdgeDetectBtn.setStyle("-fx-background-color: white");
+        });
+        sobelEdgeDetectBtn.setOnMouseClicked(event->{
+            cannyEdgeDetectBtn.setStyle("-fx-background-color: white");
+            laplacianEdgeDetectBtn.setStyle("-fx-background-color: white");
+            sobelEdgeDetectBtn.setStyle("-fx-background-color: gray");
+        });
+
+        strongWeakBtn.setOnMouseClicked(event->{
+            strongWeakBtn.setStyle("-fx-background-color: lightgray");
+            cannyBtn.setStyle("-fx-background-color: white");
+            originalColorBtn.setStyle("-fx-background-color: white");
+        });
+        cannyBtn.setOnMouseClicked(event->{
+            strongWeakBtn.setStyle("-fx-background-color: white");
+            cannyBtn.setStyle("-fx-background-color: lightgray");
+            originalColorBtn.setStyle("-fx-background-color: white");
+        });
+        originalColorBtn.setOnMouseClicked(event->{
+            strongWeakBtn.setStyle("-fx-background-color: white");
+            cannyBtn.setStyle("-fx-background-color: white");
+            originalColorBtn.setStyle("-fx-background-color: lightgray");
+        });
+
+        kernel33Btn.setOnMouseClicked(event->{
+            kernel33Btn.setStyle("-fx-background-color: lightgray");
+            kernel55Btn.setStyle("-fx-background-color: white");
+        });
+        kernel55Btn.setOnMouseClicked(event->{
+            kernel33Btn.setStyle("-fx-background-color: white");
+            kernel55Btn.setStyle("-fx-background-color: lightgray");
+        });
+
     }
 
     public void edgeDetectBackToMainMenu() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
+            Launcher.primaryStage.setX(400);
+            Launcher.primaryStage.setY(150);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();

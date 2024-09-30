@@ -55,7 +55,7 @@ public class CropController {
     @FXML
     Group previewImgGroup;
     @FXML
-    ImageView previewImg;
+    Button cropBtn;
     @FXML
     HBox rectangleRatioHBox;
     @FXML
@@ -89,8 +89,6 @@ public class CropController {
     @FXML
     public void initialize() throws IndexOutOfBoundsException{
         pageNumber=0;
-        cropPane.setStyle("-fx-border-color: Black");
-        cropPane.setStyle("-fx-background-color: Grey");
 
         progressBars= FXCollections.observableArrayList();
         cropImageGroupsList.clear();
@@ -105,11 +103,105 @@ public class CropController {
         prevBtn.setDisable(pageNumber == 0);
         nextBtn.setDisable(pageNumber + 1 == Launcher.imageViewsToProcess.size());
         saveBtn.setDisable(true);
+
+
+        //-----some UI updates-----
+        backToMainBtn.setOnMousePressed(event->{
+            backToMainBtn.setStyle("-fx-background-color: lightgrey");
+        });
+        backToMainBtn.setOnMouseReleased(event->{
+            backToMainBtn.setStyle("-fx-background-color: white");
+        });
+
+        nextBtn.setOnMousePressed((event->{
+            nextBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        nextBtn.setOnMouseReleased(event->{
+            nextBtn.setStyle("-fx-background-color: white");
+        });
+
+        prevBtn.setOnMousePressed((event->{
+            prevBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        prevBtn.setOnMouseReleased(event->{
+            prevBtn.setStyle("-fx-background-color: white");
+        });
+
+        cropBtn.setOnMousePressed((event->{
+            cropBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        cropBtn.setOnMouseReleased(event->{
+            cropBtn.setStyle("-fx-background-color: white");
+        });
+
+        saveBtn.setOnMousePressed((event->{
+            saveBtn.setStyle("-fx-background-color: lightgrey");
+        }));
+        saveBtn.setOnMouseReleased(event->{
+            saveBtn.setStyle("-fx-background-color: white");
+        });
+
+        ratioFreeBtn.setOnMouseClicked(event->{
+            ratioFreeBtn.setStyle("-fx-background-color: gray");
+            ratio11Btn.setStyle("-fx-background-color: white");
+            ratio32Btn.setStyle("-fx-background-color: white");
+            ratio23Btn.setStyle("-fx-background-color: white");
+            ratio169Btn.setStyle("-fx-background-color: white");
+            ratio916Btn.setStyle("-fx-background-color: white");
+        });
+
+        ratio11Btn.setOnMouseClicked(event->{
+            ratioFreeBtn.setStyle("-fx-background-color: white");
+            ratio11Btn.setStyle("-fx-background-color: gray");
+            ratio32Btn.setStyle("-fx-background-color: white");
+            ratio23Btn.setStyle("-fx-background-color: white");
+            ratio169Btn.setStyle("-fx-background-color: white");
+            ratio916Btn.setStyle("-fx-background-color: white");
+        });
+
+        ratio32Btn.setOnMouseClicked(event->{
+            ratioFreeBtn.setStyle("-fx-background-color: white");
+            ratio11Btn.setStyle("-fx-background-color: white");
+            ratio32Btn.setStyle("-fx-background-color: gray");
+            ratio23Btn.setStyle("-fx-background-color: white");
+            ratio169Btn.setStyle("-fx-background-color: white");
+            ratio916Btn.setStyle("-fx-background-color: white");
+        });
+
+        ratio23Btn.setOnMouseClicked(event->{
+            ratioFreeBtn.setStyle("-fx-background-color: white");
+            ratio11Btn.setStyle("-fx-background-color: white");
+            ratio32Btn.setStyle("-fx-background-color: white");
+            ratio23Btn.setStyle("-fx-background-color: gray");
+            ratio169Btn.setStyle("-fx-background-color: white");
+            ratio916Btn.setStyle("-fx-background-color: white");
+        });
+
+        ratio169Btn.setOnMouseClicked(event->{
+            ratioFreeBtn.setStyle("-fx-background-color: white");
+            ratio11Btn.setStyle("-fx-background-color: white");
+            ratio32Btn.setStyle("-fx-background-color: white");
+            ratio23Btn.setStyle("-fx-background-color: white");
+            ratio169Btn.setStyle("-fx-background-color: gray");
+            ratio916Btn.setStyle("-fx-background-color: white");
+        });
+
+        ratio916Btn.setOnMouseClicked(event->{
+            ratioFreeBtn.setStyle("-fx-background-color: white");
+            ratio11Btn.setStyle("-fx-background-color: white");
+            ratio32Btn.setStyle("-fx-background-color: white");
+            ratio23Btn.setStyle("-fx-background-color: white");
+            ratio169Btn.setStyle("-fx-background-color: white");
+            ratio916Btn.setStyle("-fx-background-color: gray");
+        });
+
     }
 
-    public void backToMainMenu() throws IOException {
+    public void backToMainMenu(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
+            Launcher.primaryStage.setX(400);
+            Launcher.primaryStage.setY(150);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();

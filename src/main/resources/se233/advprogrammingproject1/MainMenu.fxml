@@ -9,9 +9,9 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advprogrammingproject1.controllers.MainMenuController">
    <children>
-      <Pane prefHeight="500.0" prefWidth="500.0">
+      <Pane prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #a9d5d5;">
          <children>
-            <Pane fx:id="dragAreaPane" layoutX="50.0" layoutY="50.0" onDragDropped="#dragDropAction" onDragOver="#dragOverAction" prefHeight="400.0" prefWidth="400.0" style="-fx-border-color: grey; -fx-border-style: dashed;">
+            <Pane fx:id="dragAreaPane" layoutX="50.0" layoutY="50.0" onDragDropped="#dragDropAction" onDragOver="#dragOverAction" prefHeight="400.0" prefWidth="400.0" style="-fx-border-color: grey; -fx-border-style: dashed; -fx-background-color: #E3F4F4;">
                <children>
                   <Button fx:id="chooseFileBtn" layoutX="142.0" layoutY="218.0" mnemonicParsing="false" onAction="#chooseFile" text="Choose File">
                      <font>
@@ -19,23 +19,34 @@
                      </font></Button>
                   <Label fx:id="dragHereLbl" alignment="CENTER" layoutY="130.0" prefHeight="48.0" prefWidth="400.0" text="Drag and Drop File Here" textAlignment="CENTER">
                      <font>
-                        <Font size="23.0" />
+                        <Font size="26.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="dragHereLbl1" alignment="CENTER" layoutY="176.0" prefHeight="40.0" prefWidth="400.0" text="or" textAlignment="CENTER">
+                     <font>
+                        <Font size="20.0" />
                      </font>
                   </Label>
                </children>
             </Pane>
-            <Button fx:id="clearAllBtn" layoutX="400.0" layoutY="12.0" mnemonicParsing="false" onAction="#clearAllBtnAction" text="Clear All" />
-            <Pane fx:id="previewFilesPane" layoutX="51.0" layoutY="49.0" onDragDropped="#dragDropAction" onDragOver="#dragOverAction" prefHeight="400.0" prefWidth="400.0">
+            <Pane fx:id="previewFilesPane" layoutX="51.0" layoutY="49.0" onDragDropped="#dragDropAction" onDragOver="#dragOverAction" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #E3F4F4;">
                <children>
-                  <ListView fx:id="listView" onDragDropped="#dragDropAction" onDragOver="#dragOverAction" prefHeight="400.0" prefWidth="400.0" />
+                  <ListView fx:id="listView" onDragDropped="#dragDropAction" onDragOver="#dragOverAction" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #E3F4F4;" />
                </children>
             </Pane>
+            <Button fx:id="clearAllBtn" layoutX="393.0" layoutY="14.0" mnemonicParsing="false" onAction="#clearAllBtnAction" style="-fx-background-color: white;" text="Clear All" />
          </children>
       </Pane>
-      <Pane layoutX="500.0" prefHeight="500.0" prefWidth="250.0">
+      <Pane layoutX="500.0" prefHeight="500.0" prefWidth="250.0" style="-fx-background-color: #E3F4F4;">
          <children>
-            <Button fx:id= "toEdgeDetectPageBtn" layoutX="79.0" layoutY="189.0" mnemonicParsing="false" onAction="#redirectToEdgeDetect" prefHeight="30.0" prefWidth="100.0" text="Edge Detect" />
-            <Button fx:id="toCropPageBtn" layoutX="79.0" layoutY="258.0" mnemonicParsing="false" onAction="#redirectToCrop" prefHeight="30.0" prefWidth="100.0" text="Crop" />
+            <Button fx:id="toEdgeDetectPageBtn" layoutX="79.0" layoutY="173.0" mnemonicParsing="false" onAction="#redirectToEdgeDetect" onMousePressed="#mousePressToEdgeDetectBtn" onMouseReleased="#mouseReleaseToEdgeDetectBtn" prefHeight="58.0" prefWidth="171.0" style="-fx-background-color: #a9d5d5;" text="Edge Detect" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font></Button>
+            <Button fx:id="toCropPageBtn" layoutX="79.0" layoutY="263.0" mnemonicParsing="false" onAction="#redirectToCrop" onMousePressed="#mousePressToCropBtn" onMouseReleased="#mouseReleaseToCropBtn" prefHeight="58.0" prefWidth="171.0" style="-fx-background-color: #a9d5d5;" text="Crop" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font></Button>
          </children>
       </Pane>
    </children>

@@ -25,6 +25,8 @@ public class Launcher extends Application {
 
     public void start(Stage stage) throws IOException {
         primaryStage=stage;
+        Launcher.primaryStage.setX(400);
+        Launcher.primaryStage.setY(150);
         FXMLLoader fxmlLoader=new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
         Scene mainScene=new Scene(fxmlLoader.load());
         primaryStage.setScene(mainScene);

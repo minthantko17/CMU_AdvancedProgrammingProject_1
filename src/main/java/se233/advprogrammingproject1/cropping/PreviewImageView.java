@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
 
 public class PreviewImageView extends ImageView {
     public PreviewImageView(BufferedImage image){
-        this.prefWidth(260);
-        this.prefHeight(260);
+        this.prefWidth(320);
+        this.prefHeight(320);
 
 
         BufferedImage bufferedImage=new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.OPAQUE);
@@ -21,17 +21,17 @@ public class PreviewImageView extends ImageView {
         this.setImage(prevImage);
         this.setSmooth(true);
 
-        double xScale=260/prevImage.getWidth();
-        double yScale=260/prevImage.getHeight();
+        double xScale=320/prevImage.getWidth();
+        double yScale=320/prevImage.getHeight();
         double scale=Math.min(xScale,yScale);
 
         this.setFitWidth(prevImage.getWidth()*scale);
         this.setFitHeight(prevImage.getHeight()*scale);
 
         if(xScale < yScale){
-            this.setLayoutY((260 - this.getFitHeight()) / 2);     // Horizontally center if image has fitWidth
+            this.setLayoutY((320 - this.getFitHeight()) / 2);     // Horizontally center if image has fitWidth
         }else{
-            this.setLayoutX((260 - this.getFitWidth()) / 2);      // Vertically center if image has fitHeight
+            this.setLayoutX((320 - this.getFitWidth()) / 2);      // Vertically center if image has fitHeight
         }
 
     }

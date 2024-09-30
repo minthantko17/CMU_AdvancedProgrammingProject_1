@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
 
 public class EdgeDetectPreviewImageView extends ImageView {
     public EdgeDetectPreviewImageView(BufferedImage image) {
-        this.prefWidth(260);
-        this.prefHeight(260);
+        this.prefWidth(320);
+        this.prefHeight(320);
 
 
         BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.OPAQUE);
@@ -21,17 +21,17 @@ public class EdgeDetectPreviewImageView extends ImageView {
         this.setImage(edgeDetectPrevImage);
         this.setSmooth(true);
 
-        double xScale=260/edgeDetectPrevImage.getWidth();
-        double yScale=260/edgeDetectPrevImage.getHeight();
+        double xScale=320/edgeDetectPrevImage.getWidth();
+        double yScale=320/edgeDetectPrevImage.getHeight();
         double scale=Math.min(xScale,yScale);
 
         this.setFitWidth(edgeDetectPrevImage.getWidth()*scale);
         this.setFitHeight(edgeDetectPrevImage.getHeight()*scale);
 
         if(xScale < yScale){
-            this.setLayoutY((260 - this.getFitHeight()) / 2);     // Horizontally center if image has fitWidth
+            this.setLayoutY((320 - this.getFitHeight()) / 2);     // Horizontally center if image has fitWidth
         }else{
-            this.setLayoutX((260 - this.getFitWidth()) / 2);      // Vertically center if image has fitHeight
+            this.setLayoutX((320 - this.getFitWidth()) / 2);      // Vertically center if image has fitHeight
         }
     }
 
