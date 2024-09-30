@@ -61,6 +61,7 @@ public class MainMenuController {
             tempListView = listView;
             System.out.println("tempListView: " + tempListView.getItems().size());
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("CropScene2.fxml"));
+            Launcher.primaryStage.setTitle("Crop");
             Launcher.primaryStage.setX(150);
             Launcher.primaryStage.setY(10);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
@@ -81,6 +82,7 @@ public class MainMenuController {
             }
             tempListView=listView;
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("EdgeDetectScene2.fxml"));
+            Launcher.primaryStage.setTitle("Edge Detect");
             Launcher.primaryStage.setX(150);
             Launcher.primaryStage.setY(10);
             Launcher.primaryScene = new Scene(fxmlLoader.load());

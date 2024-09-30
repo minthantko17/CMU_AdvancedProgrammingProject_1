@@ -200,6 +200,7 @@ public class CropController {
     public void backToMainMenu(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("MainMenu.fxml"));
+            Launcher.primaryStage.setTitle("Advance Programming Project 1");
             Launcher.primaryStage.setX(400);
             Launcher.primaryStage.setY(150);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
@@ -221,7 +222,7 @@ public class CropController {
         for(int i=0; i<cropImageGroupsList.size(); i++){
             String imageName = Launcher.unzippedFileToProcess.get(i).getName();
             Label imageLabel = new Label(imageName);
-            imageLabel.setPrefWidth(70);
+            imageLabel.setPrefWidth(120);
 
             ProgressBar progressBar = new ProgressBar(0);
             progressBar.setPrefWidth(150);
