@@ -259,6 +259,7 @@ public class EdgeDetectController{
             Launcher.primaryStage.setTitle("Advance Programming Project 1");
             Launcher.primaryStage.setX(400);
             Launcher.primaryStage.setY(150);
+            Launcher.primaryStage.setResizable(false);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
@@ -310,49 +311,6 @@ public class EdgeDetectController{
                         executorService.submit(cannyTask);
                     }
                     break;
-//
-//                    switch(edgeDetectConfig) {
-//                        case 0:
-////                            for(int i=0; i<edgeDetectImageGroupsList.size(); i++) {
-////                                int[][] pixels=pixelList.get(i);
-////                                CannyEdgeDetector canny = new CannyEdgeDetector.Builder(pixels)
-////                                        .minEdgeSize(10)
-////                                        .thresholds(15, 35)
-////                                        .L1norm(false)
-////                                        .build();
-////                                boolean[][] weakEdges = canny.getWeakEdges();
-////                                boolean[][] strongEdges = canny.getStrongEdges();
-////                                BufferedImage strongweakImage = Threshold.applyThresholdWeakStrongCanny(weakEdges, strongEdges);
-////                                EdgeDetectController.edgeDetectedBufferedImages.add(strongweakImage);
-////                                EdgeDetectController.edgeDetectPreviewImageViewList.add(new EdgeDetectPreviewImageView(strongweakImage));
-//////                                System.out.println("done succeeded");
-////                            }
-//                        case 1:
-////                            System.out.println("1");
-////                            for(int i = 0; i< edgeDetectImageGroupsList.size(); i++) {
-////                                int[][] pixels=pixelList.get(i);
-////                                Canny_cannyTask cannyDetect=new Canny_cannyTask(pixels, i, countdown);
-////                                executorService.submit(cannyDetect);
-////                            }
-////                            break;
-//                        case 2:
-//                            for (int i = 0; i < edgeDetectImageGroupsList.size(); i++) {
-//                                int[][] pixels = Grayscale.imgToGrayPixels(bufferedImagesToDetect.get(i));
-//                                CannyEdgeDetector canny = new CannyEdgeDetector.Builder(pixels)
-//                                        .minEdgeSize(10)
-//                                        .thresholds(15, 35)
-//                                        .L1norm(false)
-//                                        .build();
-//                                boolean[][] edges = canny.getEdges();
-//                                BufferedImage edgesOriginalColor = Threshold.applyThresholdOriginal(edges, bufferedImagesToDetect.get(i));
-//                                EdgeDetectController.edgeDetectedBufferedImages.add(edgesOriginalColor);
-//                                EdgeDetectController.edgeDetectPreviewImageViewList.add(new EdgeDetectPreviewImageView(edgesOriginalColor));
-//                                System.out.println("done succeeded");
-//                                break;
-//                            }
-//                        default:
-//                    }
-//                    break;
                 case 'l':
                     System.out.println("l");
                     for(int i = 0; i < edgeDetectImageGroupsList.size(); i++) {
@@ -416,25 +374,6 @@ public class EdgeDetectController{
         }
 
     }
-//
-//    public void edgeDetectSaveBtnAction() {
-//        DirectoryChooser directoryChooser = new DirectoryChooser();
-//        directoryChooser.setTitle("Select Folder to Save");
-//        File fileDir = directoryChooser.showDialog(Launcher.primaryStage);
-//
-//        System.out.println("Before save loop edgeDetectedBufferImages size: " + edgeDetectedBufferedImages.size());
-//        System.out.println("Before save loop unzippedFiletoProcess size: " + unzippedFileToProcess.size());
-//
-//        for (int i = 0; i < edgeDetectedBufferedImages.size(); i++) {
-//            String orgFileName = unzippedFileToProcess.get(i).getName();
-//            String extension = orgFileName.substring(orgFileName.lastIndexOf(".") + 1);
-//            String fileName = "edgeDetected_" + orgFileName;
-//            File outputFile = new File(fileDir, fileName);
-//
-//            BufferedImage edgeDetectedImage = edgeDetectedBufferedImages.get(i);
-//            EdgeDetectFunctions.saveImg(edgeDetectedImage, outputFile, extension);
-//        }
-//    }
 
     public void edgeDetectSaveBtnAction() {
         try {

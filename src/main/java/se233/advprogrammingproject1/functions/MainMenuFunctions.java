@@ -42,42 +42,13 @@ public class MainMenuFunctions {
             if(checkImage(inputFile.get(i))){
                 imageFiles.add(inputFile.get(i));
             } else if (checkZip(inputFile.get(i))) {
-                try(ZipInputStream zipInputStream=new ZipInputStream(new FileInputStream(filePath.get(i)))){
-                    ZipEntry zipEntry=zipInputStream.getNextEntry();
-                    byte[] buffer = new byte[1024];
-
-                    while (zipEntry != null) {
-                        String fileName=targetPath + File.separator + zipEntry.getName();
-                        File newFile=new File(fileName);
-
-                        if(zipEntry.isDirectory()){
-                            newFile.mkdirs();
-                        }else{
-                            new File(newFile.getParent()).mkdirs();
-                            try (BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(newFile))) {
-                                int length;
-                                while ((length = zipInputStream.read(buffer)) > 0) {
-                                    fos.write(buffer, 0, length);
-                                }
-                            }
-                            if(checkImage(newFile)) {
-                                imageFiles.add(newFile);
-                            }
-                        }
-                        zipInputStream.closeEntry();
-                        zipEntry=zipInputStream.getNextEntry();
-                    }
-
-                } catch (FileNotFoundException e) {
-                    throw e;
-                } catch (IOException e) {
-                    throw e;
-                }
+                unzip(imageFiles, filePath.get(i), targetPath);
             }else{
                 System.out.println("Unsupported File");
                 throw new UnsupportedFormatException();
             }
         }
+        System.out.println("imagefile size: "+imageFiles.size());
         return imageFiles;
     }
 
@@ -115,39 +86,47 @@ public class MainMenuFunctions {
         alert.showAndWait();
     }
 
+    private static void unzip(List<File> imageFiles, String filePathInput, String targetPath){
+        boolean unsupportIncluded=false;
+        try(ZipInputStream zipInputStream=new ZipInputStream(new FileInputStream(filePathInput))){
+            ZipEntry zipEntry=zipInputStream.getNextEntry();
+            byte[] buffer = new byte[1024];
 
-    //--junk methods--
-//    public static boolean checkImage(String fileName){
-//        String[] imageExtensions = new String[] { "png", "jpg", "jpeg", "bmp", "gif" };
-//        for (String ext : imageExtensions) {
-//            if (fileName.toLowerCase().endsWith(ext)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+            while (zipEntry != null) {
+                String fileName=targetPath + File.separator + zipEntry.getName();
+                File newFile=new File(fileName);
 
-//    public static boolean checkZip(String fileName){
-//        String zipExtension = "zip";
-//        return fileName.toLowerCase().endsWith(zipExtension);
-//    }
+                if(zipEntry.isDirectory()){
+                    newFile.mkdirs();
+                }else{
+                    new File(newFile.getParent()).mkdirs();
+                    try (BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(newFile))) {
+                        int length;
+                        while ((length = zipInputStream.read(buffer)) > 0) {
+                            fos.write(buffer, 0, length);
+                        }
+                    }
 
-//    public static List<String> openFileString(){
-//        List<String> list = new ArrayList<>();
-//        FileChooser fileChooser=new FileChooser();
-//        fileChooser.setTitle("Select Image or ImageZip");
-//
-//        //filter image and zip file to choose
-//        FileChooser.ExtensionFilter extensionFilter= new FileChooser.ExtensionFilter("Image or Zip", "*.zip", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif");
-//        fileChooser.getExtensionFilters().addAll(extensionFilter);
-//
-//        List<File> file=fileChooser.showOpenMultipleDialog(Launcher.primaryStage);
-//        if (file==null){ return null; }
-////        System.out.println(file.toString());
-//
-//        for(File i: file){
-//            list.add(i.toString());
-//        }
-//        return list;
-//    }
+                    if(checkImage(newFile)){
+                        imageFiles.add(newFile);
+                    }else{
+                        unsupportIncluded=true;
+                    }
+                }
+                zipInputStream.closeEntry();
+                zipEntry=zipInputStream.getNextEntry();
+            }
+            System.out.println("imagefile size insize method: "+imageFiles.size());
+            if(unsupportIncluded){
+                throw new UnsupportedFormatException();
+            }
+        } catch (UnsupportedFormatException e) {
+//            System.err.println("Unsupported File included");
+            showAlertBox("Unsupported File(s) included in .zip folders are skipped.", Alert.AlertType.INFORMATION);
+        }catch (FileNotFoundException e) {
+            System.err.println("File not found");
+        } catch (IOException e) {
+            System.err.println("Input Output Exception");
+        }
+    }
 }

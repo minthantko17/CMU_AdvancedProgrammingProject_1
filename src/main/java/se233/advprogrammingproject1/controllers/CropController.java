@@ -203,6 +203,7 @@ public class CropController {
             Launcher.primaryStage.setTitle("Advance Programming Project 1");
             Launcher.primaryStage.setX(400);
             Launcher.primaryStage.setY(150);
+            Launcher.primaryStage.setResizable(false);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
@@ -259,6 +260,7 @@ public class CropController {
                 executorService.submit(cropTask);
             }
 
+            //show preview images only after processing
             executorService.submit(()->{
                 try {
                     countDownLatch.await();
@@ -434,45 +436,4 @@ public class CropController {
         }
         CropFunctions.updateHandles(currentRectangleBox, currentRectangleBox.getRectangle());
     }
-
-
-    //----junk methods----
-//    public void cropAndSaveImg(){
-////        Crop.crop(((CropImageGroup)cropGroup.getChildren().get(0)).getImageView(), ((CropImageGroup)cropGroup.getChildren().get(0)).getRectangleBox().getRectangle());
-////        Functions.crop(((CropImageGroup)cropGroup.getChildren().get(0)).getImageView(), ((CropImageGroup)cropGroup.getChildren().get(0)).getRectangleBox().getRectangle());
-////        directoryChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG Files", "*.jpg"));
-////        directoryChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG Files", "*.png"));
-//        DirectoryChooser directoryChooser = new DirectoryChooser();
-//        directoryChooser.setTitle("Save Image");
-//        File fileDir= directoryChooser.showDialog(Launcher.primaryStage);
-//
-//        String orgFileName;
-//        for(int i =0; i<cropImageGroupsList.size(); i++){
-//            orgFileName=Launcher.unzippedFileToProcess.get(i).getName();
-//            String extension = orgFileName.substring(orgFileName.lastIndexOf(".") + 1); //get extension format to save as
-//            String fileName="cropped_"+orgFileName;
-//            File outputFile=new File(fileDir, fileName);
-//
-//            BufferedImage croppedImage= CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle());
-//            CropFunctions.saveImg(croppedImage, outputFile, extension);
-//        }
-//    }
-//
-//    private void initiateRatios(){
-////        ratioFreeImgView.setImage(new Image(Launcher.class.getResourceAsStream("assets/size_free.png")));
-////        ratioSquareImgView.setImage(new Image(Launcher.class.getResourceAsStream("assets/size_1_1.png")));
-//
-//    }
-//
-//    public void cropBtnAction(){
-//        if(!croppedBufferedImages.isEmpty()){ croppedBufferedImages.clear(); }
-//        if(!previewImageViewList.isEmpty()){previewImageViewList.clear(); }
-//        for(int i =0; i<cropImageGroupsList.size(); i++){
-//            croppedBufferedImages.add(CropFunctions.crop(cropImageGroupsList.get(i).getImageView(), cropImageGroupsList.get(i).getRectangleBox().getRectangle()));
-//            previewImageViewList.add(new PreviewImageView(croppedBufferedImages.get(i)));
-//        }
-//        previewImgGroup.getChildren().clear();
-//        previewImgGroup.getChildren().addAll(previewImageViewList.get(pageNumber));
-////        System.out.println("croppedBufferImages size: " + croppedBufferedImages.size());
-//    }
 }

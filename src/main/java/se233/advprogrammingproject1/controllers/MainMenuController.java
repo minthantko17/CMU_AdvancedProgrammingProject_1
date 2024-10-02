@@ -64,6 +64,7 @@ public class MainMenuController {
             Launcher.primaryStage.setTitle("Crop");
             Launcher.primaryStage.setX(150);
             Launcher.primaryStage.setY(10);
+            Launcher.primaryStage.setResizable(false);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
@@ -85,6 +86,7 @@ public class MainMenuController {
             Launcher.primaryStage.setTitle("Edge Detect");
             Launcher.primaryStage.setX(150);
             Launcher.primaryStage.setY(10);
+            Launcher.primaryStage.setResizable(false);
             Launcher.primaryScene = new Scene(fxmlLoader.load());
             Launcher.primaryStage.setScene(Launcher.primaryScene);
             Launcher.primaryStage.show();
@@ -208,25 +210,4 @@ public class MainMenuController {
     public void mouseReleaseToEdgeDetectBtn(){
         toEdgeDetectPageBtn.setStyle("-fx-background-color: #a9d5d5");
     }
-
-
-//    inputListView.setOnDragDropped(event->{
-//        Dragboard db=event.getDragboard();
-//        boolean success=false;
-//        if(db.hasFiles()){
-//            success=true;
-//            String filePath;
-//            String fileName;
-//            int totalFiles=db.getFiles().size();
-//            for(int i=0;i<totalFiles;i++){
-//                File file = db.getFiles().get(i);
-//                filePath = file.getAbsolutePath();
-//                fileName = Paths.get(filePath).getFileName().toString();
-//                inputFilePath.add(filePath);
-//                inputListView.getItems().add(fileName);
-//            }
-//        }
-//        event.setDropCompleted(success);
-//        event.consume();
-//    });
 }

@@ -134,38 +134,6 @@ public class RectangleBoxGroup extends Group {
             deltaY=event.getY()-initY;
         }
 
-//        if (resizingTop){
-//            rectangle.setY(initY+deltaY);
-//            rectangle.setHeight(initHeight-deltaY);
-//
-//            if(CropController.isAspectRatio){
-//                if(canResizeLarger) {
-////                    System.out.println("in if condition");
-//                    rectangle.setWidth(rectangle.getHeight() * (CropController.ratioWidth / CropController.ratioHeight));
-//                    updateHandles(rectangle);
-//                }
-//                if(rectangle.getWidth() > imageView.getFitWidth()){
-////                    System.out.println("in if condition 2");
-//                    rectangle.setWidth(imageView.getFitWidth());
-//                    rectangle.setHeight(rectangle.getWidth() * (CropController.ratioHeight / CropController.ratioWidth));
-//                    canResizeLarger=false;
-//                }else{
-////                    System.out.println("in else condition");
-//                    canResizeLarger=canBeLarger(rectangle);
-//                }
-//            }
-////            // DON'T DELETE --- works but not too specific
-////            if(CropController.isAspectRatio){
-//////                System.out.println("in if condition");
-////                ensureRectangleWithinBounds(rectangle,imageView);
-////                updateHandles(rectangle);
-////                if(rectangle.getWidth()<imageView.getFitWidth()){
-////                    rectangle.setWidth(rectangle.getHeight()*(CropController.ratioWidth/CropController.ratioHeight));
-////                }else{
-////                    rectangle.setWidth(imageView.getFitWidth());
-////                }
-////            }
-//        }
         if (resizingTop) {
             System.out.println("resizing top");
             rectangle.setY(initY + deltaY);
@@ -185,7 +153,6 @@ public class RectangleBoxGroup extends Group {
             }else{
                 rectangle.setHeight(initHeight - deltaY);
             }
-//            updateHandles(this, rectangle);
         }
 
         if (resizingBottom){
